@@ -1,0 +1,65 @@
+@startuml
+
+
+component "Платежная система" as PaymentSystem
+note left of PaymentSystem
+    Это могут быть
+    1. http://pay.yandex.ru
+    2. https://yookassa.ru/
+    3. https://stripe.com/
+    ...
+end note
+
+component PaymentGateway
+note right of PaymentGateway
+    Инкапсулирует работу
+    с платежными сервисами
+end note
+
+database PaymentGatewayВb
+note left of PaymentGatewayВb
+    Хранит все инвойсы,
+    можно смотреть кто чего оплачивал\возвращал
+end note
+
+component AuthService
+note bottom of AuthService
+    Предоставляет персоанализированные данны
+    1. Почта
+    2. Личные скидки
+end note
+
+component "Личный кабинет" as PersonalArea
+note top of PersonalArea
+    Возможно эту роль может выполнять Сервис Авторизации.
+
+    Информация о плане должны быть доступна при формировании access_token
+    ... механизм не очень понятен ...
+
+    Инфомация об оплаченом фильме должна быть доступна компонентам, работающим с фильмом.
+    ... механизм не очень понятен ...
+
+end note
+database PersonalAreaDb
+note left of PersonalAreaDb
+    Храним:
+    1. Информацию о подписке
+    2. Информацию об оплаченных фильмах
+end note
+
+
+component "Сервис нотификации" as NotificationService
+
+PaymentGateway <-left-> PaymentGatewayВb
+PaymentGateway <--> PaymentSystem
+PaymentGateway -down-> AuthService: запросить данные о пользователе, \n необходимые для оплаты
+PaymentGateway --> NotificationService: оплата зафиксирована
+
+PersonalArea --> PaymentGateway: 1. Создание инвойса \n OR Запрос на возврат
+PersonalArea <-- PaymentGateway: 2. Редирект на Платежную систему \n 3. Уведомление об оплате\возварте
+PersonalArea <-left-> PersonalAreaDb
+PersonalArea --> NotificationService: подписка скоро истекает
+
+
+
+@enduml
