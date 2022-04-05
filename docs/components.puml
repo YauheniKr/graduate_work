@@ -16,8 +16,8 @@ note right of PaymentGateway
     с платежными сервисами
 end note
 
-database PaymentGatewayВb
-note left of PaymentGatewayВb
+database PaymentGatewayDb
+note left of PaymentGatewayDb
     Хранит все инвойсы,
     можно смотреть кто чего оплачивал\возвращал
 end note
@@ -50,7 +50,7 @@ end note
 
 component "Сервис нотификации" as NotificationService
 
-PaymentGateway <-left-> PaymentGatewayВb
+PaymentGateway <-left-> PaymentGatewayDb
 PaymentGateway <--> PaymentSystem
 PaymentGateway -down-> AuthService: запросить данные о пользователе, \n необходимые для оплаты
 PaymentGateway --> NotificationService: оплата зафиксирована
