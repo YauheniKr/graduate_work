@@ -1,0 +1,146 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "Payment Gateway for Online movie theater"
+host: "127.0.0.1"
+basePath: "/api/v1"
+schemes:
+- "https"
+- "http"
+paths:
+  /invoices:
+    post:
+      tags:
+      - "invoices"
+      summary: "Create invoice"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created invoice object"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            id:
+              type: "integer"
+              format: "int64"
+            product_guid:
+              type: "string"
+            product_description:
+              type: "string"
+            product_price:
+              type: "string"
+            product_count:
+              type: "string"
+            redirect_url:
+              type: "string"
+      responses:
+        "200":
+          description: "Invoice created"
+          schema:
+            type: object
+            description: Invoice info
+            properties:
+              guid:
+                type: string
+                description: The invoice GUID.
+              payment_info:
+                type: object
+                description: Payment info.
+                properties:
+                  redirect_url:
+                    type: string
+        
+        "400":
+          description: "Somthing wrong"
+    
+    get:
+      tags:
+      - "invoices"
+      summary: "Get invoices"
+      description: ""
+      responses:
+        "200":
+          description: "Invoice created"
+          schema:
+            type: array
+            items:
+              type: object
+              description: Invoice info
+              properties:
+                guid:
+                  type: string
+                  description: The invoice GUID.
+
+  /invoices/{InvoiceGUID}/Refund:
+    patch:
+      tags:
+      - "invoices"
+      summary: "Change invoice"
+      parameters:
+      - name: "InvoiceGUID"
+        in: "path"
+        description: GUID of invoice"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Refunding info"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            amount:
+              type: "object"
+      responses:
+        "200":
+          description: "Invoice refunded"
+  
+  /payments/{payment_sysytem_id}/Notify:
+    post:
+      tags:
+      - "payments"
+      summary: "Payment system notifications webhook"
+      parameters:
+      - name: "payment_sysytem_id"
+        in: "path"
+        description: GUID of invoice"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Notification"
+        required: true
+        schema:
+          type: "object"
+      responses:
+        "200":
+          description: "Invoice refunded"
+      
+  /payments/yookassa/Notify:
+    post:
+      tags:
+      - "payments"
+      summary: "Yookassa notifications webhook"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Notification"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            type:
+              type: "string"
+            event:
+              type: "string"
+            object:
+              type: "object"
+      responses:
+        "200":
+          description: "Invoice refunded"
+      

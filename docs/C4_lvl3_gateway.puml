@@ -1,0 +1,39 @@
+@startuml
+
+skinparam component {
+    backgroundColor<<external>> #438dd5
+    backgroundColor<<internal>> #85bbf0
+}
+
+component "Платежная система" as PaymentSystem <<external>>
+component AuthService <<external>>
+component "Личный кабинет" as PersonalArea <<external>>
+component "Сервис нотификации" as NotificationService <<external>>
+
+
+component PaymentGateway {
+    component GetInvoicesView <<internal>>
+    component CreateInvoiceView <<internal>>
+    component RefundInvoiceView <<internal>>
+
+    component PaymentNotificationView <<internal>>
+}
+
+database PaymentGatewayDb
+PaymentGateway <-left-> PaymentGatewayDb
+
+PersonalArea <.. PaymentNotificationView: Уведомление о выполнении инвойса \n [http json]
+PersonalArea --> CreateInvoiceView: Создать инвойс \n [http json]
+PersonalArea --> RefundInvoiceView: Вернуть деньги \n [http json]
+PersonalArea --> GetInvoicesView: Получить список инвойсов [http json]
+
+CreateInvoiceView --> AuthService: Запросить данные пользователя
+CreateInvoiceView --> PaymentSystem: Создать платеж
+
+PaymentSystem -up-> PaymentNotificationView
+
+PaymentNotificationView --> NotificationService: Изменение статуса оплаты
+CreateInvoiceView --> NotificationService: Сообщить о созданиии инвойса
+RefundInvoiceView --> NotificationService: Сообщить о запросе на возврат денег
+
+@enduml
