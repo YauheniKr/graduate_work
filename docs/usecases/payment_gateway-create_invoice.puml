@@ -15,4 +15,22 @@ PaymentGateway -> PaymentGatewayDb: Создать invoice (статус not_pai
 PaymentGateway -> ЛК: Информация об invoice
 deactivate PaymentGateway
 deactivate ЛК
+
+
+== Ошибка работы с платежной системой ==
+ЛК -> PaymentGateway: Создать invoice
+activate ЛК
+activate PaymentGateway
+
+
+PaymentGateway -> PaymentSystem: Создать платеж
+activate PaymentSystem
+PaymentSystem -> PaymentGateway: timeout, 4xx, 5xx
+deactivate PaymentSystem
+
+PaymentGateway -> ЛК: 503
+deactivate PaymentGateway
+deactivate ЛК
+
+
 @enduml
