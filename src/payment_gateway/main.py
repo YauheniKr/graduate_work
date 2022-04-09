@@ -1,4 +1,4 @@
-import uvicorn
+# import uvicorn
 
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
@@ -30,9 +30,9 @@ async def shutdown():
 app.include_router(ping.router, prefix='/api/v1/ping', tags=['ping'])
 
 
-if __name__ == '__main__':
-    uvicorn.run(
-        'main:app',
-        host='0.0.0.0',
-        port=8001,
-    )
+# if __name__ == '__main__':
+#     uvicorn.run(
+#         'main:app',
+#         host='0.0.0.0',
+#         port=8001,
+#     )
