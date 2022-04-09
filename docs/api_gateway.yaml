@@ -17,6 +17,8 @@ paths:
       description: ""
       produces:
       - "application/json"
+      security:
+      - filmtheater_auth: []
       parameters:
       - in: "body"
         name: "body"
@@ -25,19 +27,23 @@ paths:
         schema:
           type: "object"
           properties:
-            id:
-              type: "integer"
-              format: "int64"
-            product_guid:
+            product:
+              type: "object"
+              properties:
+                price:
+                  type: "object"
+                  properties:
+                    amount:
+                      type: "number"
+                    currency:
+                      type: "string"
+                count:
+                  type: "number"
+            success_url:
               type: "string"
-            product_description:
+            fail_url:
               type: "string"
-            product_price:
-              type: "string"
-            product_count:
-              type: "string"
-            redirect_url:
-              type: "string"
+      
       responses:
         "200":
           description: "Invoice created"
@@ -52,7 +58,7 @@ paths:
                 type: object
                 description: Payment info.
                 properties:
-                  redirect_url:
+                  checkout_url:
                     type: string
         
         "400":
@@ -63,6 +69,8 @@ paths:
       - "invoices"
       summary: "Get invoices"
       description: ""
+      security:
+      - filmtheater_auth: []
       responses:
         "200":
           description: "Invoice created"
@@ -81,6 +89,8 @@ paths:
       tags:
       - "invoices"
       summary: "Change invoice"
+      security:
+      - filmtheater_auth: []
       parameters:
       - name: "InvoiceGUID"
         in: "path"
@@ -94,8 +104,15 @@ paths:
         schema:
           type: "object"
           properties:
-            amount:
+            invoice_guid:
+              type: "string"
+            price:
               type: "object"
+              properties:
+                amount:
+                  type: "number"
+                currency:
+                  type: "string"
       responses:
         "200":
           description: "Invoice refunded"
@@ -143,4 +160,27 @@ paths:
       responses:
         "200":
           description: "Invoice refunded"
+  
+  /payments/stripe/webhook:
+    post:
+      tags:
+      - "payments"
+      summary: "Stripe notifications webhook"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Notification"
+        required: true
+        schema:
+          type: "object"
+      responses:
+        "200":
+          description: "Invoice refunded"
+
+securityDefinitions:
+  filmtheater_auth:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+
       
