@@ -1,0 +1,49 @@
+@startuml
+
+skinparam component {
+    backgroundColor<<new>> #438dd5
+    backgroundColor<<existing>> #85bbf0
+    backgroundColor<<external>> #85fff0
+}
+
+component "Сервис авторизации" as AuthService
+
+component SynemaPaymentSystem {
+    component PaymentGateway <<new>>
+    note bottom of PaymentGateway
+        Инкапсулирует работу
+        с платежными сервисами
+    end note
+
+    component InvoiceStatesQueue <<new>>
+    note bottom of InvoiceStatesQueue
+        RabbitMQ + API сервиc для универсальноги интерфейса
+    end note
+}
+
+component "Платежная система" as PaymentSystem <<external>>
+note bottom of PaymentSystem
+    Это могут быть
+    1. http://pay.yandex.ru
+    2. https://yookassa.ru/
+    3. https://stripe.com/
+    ...
+end note
+
+component AuthService <<existing>>
+
+component "Сервис нотификации" as NotificationService <<existing>>
+
+PaymentGateway <--> PaymentSystem
+' PaymentGateway -up-> AuthService: запросить данные о пользователе, \n необходимые для оплаты
+PaymentGateway -right-> NotificationService: Оплата зафиксирована
+
+PaymentGateway -left-> InvoiceStatesQueue: Сообщение об изменении статуса
+
+AuthService -down-> PaymentGateway: Создание инвойса
+AuthService -left-> InvoiceStatesQueue: Получение статуса
+AuthService --> NotificationService: Подписка скоро истекает
+
+
+
+@enduml

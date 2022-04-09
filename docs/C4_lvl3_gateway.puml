@@ -9,7 +9,10 @@ component "Платежная система" as PaymentSystem <<external>>
 component AuthService <<external>>
 component "Личный кабинет" as PersonalArea <<external>>
 component "Сервис нотификации" as NotificationService <<external>>
-
+component InvoiceStatesQueue <<external>>
+note bottom of InvoiceStatesQueue
+    RabbitMQ + API сервиc для универсальноги интерфейса
+end note
 
 component PaymentGateway {
     component GetInvoicesView <<internal>>
@@ -20,9 +23,11 @@ component PaymentGateway {
 }
 
 database PaymentGatewayDb
-PaymentGateway <-left-> PaymentGatewayDb
+PaymentGateway <--> PaymentGatewayDb
 
-PersonalArea <.. PaymentNotificationView: Уведомление о выполнении инвойса \n [http json]
+PaymentNotificationView .up.> InvoiceStatesQueue: Отправка сообщения о статусе invoice
+PersonalArea .left.> InvoiceStatesQueue: Получение сообщение о статусе invoice
+
 PersonalArea --> CreateInvoiceView: Создать инвойс \n [http json]
 PersonalArea --> RefundInvoiceView: Вернуть деньги \n [http json]
 PersonalArea --> GetInvoicesView: Получить список инвойсов [http json]
