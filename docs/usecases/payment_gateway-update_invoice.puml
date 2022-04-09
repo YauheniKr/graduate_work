@@ -1,0 +1,25 @@
+@startuml
+
+== Уведомление от платежной ситемы ==
+PaymentSystem -> PaymentGateway: Изменение статуса платежа
+activate PaymentGateway
+
+PaymentGateway -> PaymentGatewayDb: Изменить статуса invoice (статус paid) 
+
+PaymentGateway -> InvoiceStatesQueue: Отправить событие об изменении состояния invoice
+deactivate PaymentGateway
+
+
+== Опрос платежной системы (если Уведомление от платежной системы не поступает) ==
+PaymentGateway -> PaymentSystem: Проверить статус платежа
+activate PaymentGateway
+
+activate PaymentSystem
+PaymentSystem -> PaymentGateway: Информация о статусе платежа
+deactivate PaymentSystem
+
+PaymentGateway -> PaymentGatewayDb: Изменить статуса invoice (статус paid) 
+PaymentGateway -> InvoiceStatesQueue: Отправить событие об изменении состояния invoice
+deactivate PaymentGateway
+
+@enduml

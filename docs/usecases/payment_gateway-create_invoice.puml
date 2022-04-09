@@ -1,0 +1,18 @@
+@startuml
+
+ЛК -> PaymentGateway: Создать invoice
+activate ЛК
+activate PaymentGateway
+
+
+PaymentGateway -> PaymentSystem: Создать платеж
+activate PaymentSystem
+PaymentSystem -> PaymentGateway: Информация о созданом платеже
+deactivate PaymentSystem
+
+PaymentGateway -> PaymentGatewayDb: Создать invoice (статус not_paid) 
+
+PaymentGateway -> ЛК: Информация об invoice
+deactivate PaymentGateway
+deactivate ЛК
+@enduml
