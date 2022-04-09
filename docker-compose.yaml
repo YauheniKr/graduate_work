@@ -1,6 +1,13 @@
 version: '3.7'
 
 services:
+  payment_gateway_db:
+    image: postgres:13
+    volumes:
+      -  payment_gateway_db_voume:/var/lib/postgresql/data
+    env_file:
+     - config/.env
+
   payment_gateway:
     image: payment_gateway:0.0.1
     build:
@@ -16,3 +23,6 @@ services:
 networks:
   movies-network:
     external: true
+
+volumes:
+  payment_gateway_db_voume: {}

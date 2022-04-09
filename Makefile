@@ -5,7 +5,7 @@ else
 endif
 
 ifeq ($(s),)
-	service := pay_sys
+	service := payment_gateway
 else
 	service := $(s)
 endif
