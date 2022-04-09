@@ -1,0 +1,6 @@
+version: '3.7'
+
+services:
+  payment_gateway:
+    volumes:
+      - ./src/payment_gateway:/opt/payment_gateway
