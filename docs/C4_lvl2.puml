@@ -15,6 +15,9 @@ component SynemaPaymentSystem {
         с платежными сервисами
     end note
 
+    database PaymentGatewayDb
+    PaymentGateway <-down-> PaymentGatewayDb
+
     component InvoiceStatesQueue <<new>>
     note bottom of InvoiceStatesQueue
         RabbitMQ + API сервиc для универсальноги интерфейса
