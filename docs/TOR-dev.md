@@ -24,5 +24,130 @@
     1. Разработать механизм доставки информации о купленной подписке в сервис авторизации.
         1. Если за учет подписок будет отвечать личный кабинет, то необходимо чтобы сервис авторизации мог получить информацию о подписке пользователя.
 
+Вопросы:
+1. А должен ли запрос к payment gateway быть авторизованн (конечным пользователем)?
+1. 
+
 ## Not functionals
 1. **...?...**
+
+
+
+
+
+## Личный кабинет = Сервис авторизаций
+
+1. Оплатить продукт
+POST
+
+auth: access_token
+body:
+{
+    'product_id': <String>
+    'product_count': <Integrer>
+}
+
+
+responce:
+200
+{
+    "redirect_url": <URL>
+}
+
+400
+{
+    'error_id': <String>
+    'error_desc': <String>
+}
+
+
+2. Возврат продукта (опция)
+POST
+
+auth: access_token
+body:
+{
+    'invoice_guid': <String>
+    'price': {auth: access_token
+body:
+{
+    'invoice_guid': <String>
+    'price': {
+        'amount': <Float>,
+        'currency': <Float>,
+    }
+}
+
+
+responce:
+200
+{
+    "redirect_url": <URL>
+}
+
+        'amount': <Float>,
+        'currency': <Float>,
+    }
+}
+
+
+responce:
+200
+{
+    "redirect_url": <URL>
+}
+
+3. Список заказанных продуктов клиента
+
+GET
+
+auth: access_token
+query:
+1. product_id
+2. user_guid
+3. page_limit
+4. page_number
+
+
+responce:
+200
+[
+    {
+        "timestamp":
+        "product": {
+            "product_id":
+            "product_ame":
+            "from":
+            "to":
+            "price": {
+                'amount': <Float>,
+                'currency': <Float>,
+            }
+        }
+    },
+]
+
+
+! В БД храним:
+1. id продукта
+2. именование продукта
+3. цена продукта - amount + currency
+
+
+
+## Определение подписки пользователя в кинотеатре
+
+1. Доработка валидации токена для проверки наличия подписки
+2. Доработка обновления токена после проведения оплаты подписки
+3. Доработка обновления токена после окончания подписки 
+- не нужно т.к. дата окончания подписке есть в токене
+
+
+## Инвойс
+1. timestamp create
+1. timestamp modification
+1. state [not_paid, paid, fail]
+2. product
+    name
+    desc
+    price
