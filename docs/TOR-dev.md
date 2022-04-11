@@ -147,7 +147,8 @@ responce:
 1. timestamp create
 1. timestamp modification
 1. state [not_paid, paid, fail]
-2. product
+1. product
     name
     desc
     price
+1. does_status_send in queue

@@ -8,6 +8,11 @@ basePath: "/api/v1"
 schemes:
 - "https"
 - "http"
+tags:
+- name: "invoices"
+- name: "payments"
+  description: "Еhe composition of the API depends on the set of supported payment systems"
+
 paths:
   /invoices:
     post:
@@ -71,6 +76,16 @@ paths:
       description: ""
       security:
       - filmtheater_auth: []
+      parameters:
+        - in: query
+          name: user_guid
+          type: string
+          description: GUID of the user to get
+        - in: query
+          name: page
+          type: string
+          description: page nambur
+
       responses:
         "200":
           description: "Invoice created"
@@ -85,7 +100,7 @@ paths:
                   description: The invoice GUID.
 
   /invoices/{InvoiceGUID}/Refund:
-    patch:
+    post:
       tags:
       - "invoices"
       summary: "Change invoice"
@@ -104,8 +119,6 @@ paths:
         schema:
           type: "object"
           properties:
-            invoice_guid:
-              type: "string"
             price:
               type: "object"
               properties:
