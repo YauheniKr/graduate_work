@@ -8,4 +8,5 @@ backoff~=1.11.1
 
 fastapi-sqlalchemy==0.2.1
 psycopg2-binary==2.9.2
+asyncpg==0.25.0
 alembic==1.7.7

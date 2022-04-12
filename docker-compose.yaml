@@ -18,6 +18,7 @@ services:
     env_file:
      - config/.env
     networks:
+      - default
       - movies-network
 
 networks:
