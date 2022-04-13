@@ -13,6 +13,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.postgres import get_session
 from models import Invoice
+from services.payment_systems_manager import get_payment_system
+
 
 router = APIRouter()
 
@@ -41,14 +43,27 @@ async def get_invoices(db: AsyncSession = Depends(get_session)):
     ]
 
 
+class ResponseInvoiceWithCheckout(BaseModel):
+    invoice: ResponseInvoice
+    checkout_url: str
+
+
 @router.post(
     '/',
     summary='Create invoice',
-    response_model=ResponseInvoice,
+    response_model=ResponseInvoiceWithCheckout,
 )
 async def create_invoice(db: AsyncSession = Depends(get_session)):
+    payment_system = get_payment_system()
+
     invoice = Invoice()
+
+    checkout_info = await payment_system.create_checkout(invoice)
+
     db.add(invoice)
     await db.commit()
     await db.refresh(invoice)
-    return ResponseInvoice.from_db_model(invoice)
+    return ResponseInvoiceWithCheckout(
+        invoice=ResponseInvoice.from_db_model(invoice),
+        checkout_url=checkout_info.checkout_url
+    )
