@@ -10,7 +10,6 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.postgres import get_session
-from db.rabbitmq import get_rabbit
 from models import Invoice
 from services.payment_systems_manager import get_payment_system
 from services.invoice_states_manager import get_invoices_state_manager
