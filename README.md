@@ -16,10 +16,11 @@ body:
 {
   "product_name": "subscription, 1 month",
   "product_count": 2,
-  "product_price_currency": "RUB",
-  "product_price_amount_total": 600
+  "product_price_currency": "USD",
+  "product_unit_price": 10
 }
 ```
+
 responses:
 **200**
 ```
