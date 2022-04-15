@@ -1,4 +1,4 @@
-fastapi==0.70.0
+fastapi==0.75.1
 orjson==3.6.4
 uvicorn==0.15.0
 gunicorn==20.1.0
