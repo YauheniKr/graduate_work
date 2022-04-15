@@ -15,8 +15,6 @@ from db.postgres import get_session
 from models import Invoice
 from services.payment_systems_manager import get_payment_system
 
-from ..utils import get_current_user_id
-
 
 router = APIRouter()
 
@@ -39,7 +37,6 @@ class ResponseInvoice(BaseModel):
     response_model=List[ResponseInvoice],
 )
 async def get_invoices(
-    user_id: str = Depends(get_current_user_id()),
     db: AsyncSession = Depends(get_session)
 ):
     invoices = await db.execute(select(Invoice))
@@ -75,7 +72,6 @@ class ResponseInvoiceWithCheckout(BaseModel):
 )
 async def create_invoice(
     invoice_request: InvoiceRequest,
-    user_id: str = Depends(get_current_user_id()),
     db: AsyncSession = Depends(get_session)
 ):
     payment_system = get_payment_system()
