@@ -1,7 +1,6 @@
 import uuid
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -10,7 +9,7 @@ from models import Invoice
 
 class ResponseInvoice(BaseModel):
     id: uuid.UUID
-    created_at: Optional[datetime]
+    created_at: datetime
 
     @classmethod
     def from_db_model(cls, obj):
