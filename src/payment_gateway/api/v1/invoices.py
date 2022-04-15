@@ -1,12 +1,7 @@
-import uuid
-
-from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter
 from fastapi import Depends
-
-from pydantic import BaseModel
 
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,20 +10,13 @@ from db.postgres import get_session
 from models import Invoice
 from services.payment_systems_manager import get_payment_system
 
+from .models import (
+    ResponseInvoice,
+    InvoiceRequest,
+    ResponseInvoiceWithCheckout,
+)
 
 router = APIRouter()
-
-
-class ResponseInvoice(BaseModel):
-    id: uuid.UUID
-    created_at: Optional[datetime]
-
-    @classmethod
-    def from_db_model(cls, obj):
-        return cls(
-            id=obj.id,
-            created_at=obj.created_at,
-        )
 
 
 @router.get(
@@ -43,26 +31,6 @@ async def get_invoices(
     return [
         ResponseInvoice.from_db_model(o) for o in invoices.scalars().all()
     ]
-
-
-class InvoiceRequest(BaseModel):
-    product_name: str = 'subscription, 1 month'
-    product_count: int = 2
-    product_price_currency: str = 'RUB'
-    product_price_amount_total: float = 600
-
-    def to_db_model(self):
-        return Invoice(
-            product_name=self.product_name,
-            product_count=self.product_count,
-            product_price_currency=self.product_price_currency,
-            product_price_amount_total=self.product_price_amount_total,
-        )
-
-
-class ResponseInvoiceWithCheckout(BaseModel):
-    invoice: ResponseInvoice
-    checkout_url: str
 
 
 @router.post(
