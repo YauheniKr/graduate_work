@@ -10,8 +10,6 @@
 ## Создание Invoice
 **/api/v1/invoices**  
 method: POST  
-headers:  
-* Authorization = "Bearer <access_token>"
 
 body:  
 ```
