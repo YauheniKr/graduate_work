@@ -4,7 +4,7 @@ services:
   payment_gateway_db:
     image: postgres:13
     volumes:
-      -  payment_gateway_db_voume:/var/lib/postgresql/data
+      -  payment_gateway_db_volume:/var/lib/postgresql/data
     env_file:
      - config/.env
 
@@ -31,4 +31,4 @@ networks:
     external: true
 
 volumes:
-  payment_gateway_db_voume: {}
+  payment_gateway_db_volume: {}
