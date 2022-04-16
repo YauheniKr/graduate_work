@@ -47,3 +47,5 @@ class Invoice(Base):
         DateTime,
         default=datetime.datetime.utcnow,
     )
+
+    x_request_id = Column(String, nullable=False, unique=True)
