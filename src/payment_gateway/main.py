@@ -1,13 +1,9 @@
-# import uvicorn
-
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
 from api.v1 import ping
+from api.v1 import invoices
 
-from core import settings
-# from db import elastic
-# from db import redis
 
 app = FastAPI(
     title='PAYGATEWAY',
@@ -28,11 +24,4 @@ async def shutdown():
 
 
 app.include_router(ping.router, prefix='/api/v1/ping', tags=['ping'])
-
-
-# if __name__ == '__main__':
-#     uvicorn.run(
-#         'main:app',
-#         host='0.0.0.0',
-#         port=8001,
-#     )
+app.include_router(invoices.router, prefix='/api/v1/invoices', tags=['invoices'])
