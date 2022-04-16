@@ -21,6 +21,13 @@ class InvoiceState(enum.Enum):
     failed = 3
 
 
+invoice_status_names = {
+    InvoiceState.not_paid: 'unpaid',
+    InvoiceState.paid: 'paid',
+    InvoiceState.failed: 'failed',
+}
+
+
 class Invoice(Base):
     __tablename__ = "invoices"
 
