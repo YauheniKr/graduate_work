@@ -4,6 +4,8 @@ from fastapi.responses import ORJSONResponse
 from api.v1 import ping
 from api.v1 import invoices
 
+from services.invoice_states_manager import invoice_manager
+
 
 app = FastAPI(
     title='PAYGATEWAY',
@@ -15,12 +17,12 @@ app = FastAPI(
 
 @app.on_event('startup')
 async def startup():
-    pass
+    await invoice_manager.start()
 
 
 @app.on_event('shutdown')
 async def shutdown():
-    pass
+    await invoice_manager.stop()
 
 
 app.include_router(ping.router, prefix='/api/v1/ping', tags=['ping'])

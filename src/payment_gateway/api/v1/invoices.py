@@ -48,13 +48,14 @@ async def create_invoice(
 
     invoice = invoice_request.to_db_model()
 
-    await state_manager.send_invoice_state(invoice)
-
     checkout_info = await payment_system.create_checkout(invoice)
 
     db.add(invoice)
     await db.commit()
     await db.refresh(invoice)
+
+    await state_manager.send_invoice_state(invoice)
+
     return ResponseInvoiceWithCheckout(
         invoice=ResponseInvoice.from_db_model(invoice),
         checkout_url=checkout_info.checkout_url
