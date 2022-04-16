@@ -10,6 +10,8 @@
 ## Создание Invoice
 **/api/v1/invoices**  
 method: POST  
+headers:
+* X-Request-Id: unique request id  
 
 body:  
 ```
