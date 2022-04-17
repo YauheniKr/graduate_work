@@ -9,12 +9,14 @@ from models import Invoice
 
 class ResponseInvoice(BaseModel):
     id: uuid.UUID
+    state: str
     created_at: datetime
 
     @classmethod
     def from_db_model(cls, obj):
         return cls(
             id=obj.id,
+            state=obj.state.name,
             created_at=obj.created_at,
         )
 

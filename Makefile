@@ -13,6 +13,10 @@ endif
 
 init:
 	cp -n config/.env.tmpl config/.env
+	docker-compose $(compose_options) up -d payment_gateway_db
+	docker-compose $(compose_options) exec payment_gateway_db sh -c "until pg_isready -U postgres -d payment_gateway_db; do sleep 1; done"
+	docker-compose $(compose_options) up -d payment_gateway
+	docker-compose $(compose_options) exec payment_gateway sh -c "alembic upgrade head"
 
 build:
 	docker-compose $(compose_options) build $(options)
