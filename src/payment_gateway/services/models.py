@@ -17,5 +17,5 @@ class InvoiceStateAMPQMessage(BaseModel):
         return cls(
             id=obj.id,
             created_at=obj.created_at,
-            state=str(obj.state),
+            state=obj.state.name,
         )
