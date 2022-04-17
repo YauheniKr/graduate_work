@@ -34,6 +34,32 @@ responses:
   "checkout_url": "string"
 }
 ```
+
+# Rabbit MQ
+Получение статуса инвойса происходит через получение сообщения от RabbitMQ.  
+  
+Имя очереди по-умлчанию - **invoices**  
+Параметры подключения по-умолчанию - **amqp://guest:guest@rabbitmq/**  
+(см. конфигурационный файл .env переменные PAYGATEWAY_RABBITMQ_URI и PAYGATEWAY_RABBITMQ_QUEUE)  
+  
+Формат сообщения:
+```
+{
+  "id": <String: id инвойса>,
+  "created_at": <String: метка времени>,
+  "state": <String: статус инвойса>
+}
+```
+
+Пример:
+```
+{
+  "id": "599f2636-6e51-4d86-8e39-ff72e56daf47",
+  "created_at": "2022-04-17T11:47:54.485937",
+  "state": "unpaid"
+}
+```
+``
 # Development
 
 ## Инициализация
