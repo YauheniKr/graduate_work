@@ -14,12 +14,11 @@ class StripePaymentSystem(PaymentSystem):
         try:
             checkout_session = stripe.checkout.Session.create(
                 clien_reference_id=invoice.id,
-                currency=invoice.product_price_currency,
                 line_items=[
                     {
                         'price_data': {
                             'currency': invoice.product_price_currency,
-                            'unit_amount': invoice.product_price_amount_total,
+                            'unit_amount': int(invoice.product_price_amount_total * 100),
                             'product_data': {
                                 'name': invoice.product_name,
                             },
@@ -28,12 +27,11 @@ class StripePaymentSystem(PaymentSystem):
                     },
                 ],
                 mode='payment',
+                #FIXME: изменить ссылка на указанные в ручке
                 success_url='http://localhost:8001' + '/success.html',
                 cancel_url='http://localhost:8001' + '/cancel.html',
             )
         except Exception as exc:
-            return str(exc)
-        print(checkout_session.url)
-        # return redirect(checkout_session.url, code=303)
+            raise exc
         return CheckoutInfo(checkout_url=checkout_session.url)
 #     )
