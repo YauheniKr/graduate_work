@@ -9,7 +9,6 @@ from fastapi import (
     Header,
     HTTPException,
     Response,
-    Request,
 )
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,6 +17,7 @@ from sqlalchemy.future import select
 from db.postgres import get_session
 from models import Invoice
 from services.payment_systems_manager import get_payment_system
+from services.invoice_states_manager import get_invoices_state_manager
 
 from .models import (
     ResponseInvoice,
@@ -62,6 +62,7 @@ async def create_invoice(
     response: Response,
     invoice_request: InvoiceRequest,
     db: AsyncSession = Depends(get_session),
+    state_manager=Depends(get_invoices_state_manager),
     x_request_id: str = Header(None, example=str(uuid.uuid4())),
 ):
     if not x_request_id:
@@ -86,7 +87,8 @@ async def create_invoice(
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT,
         )
-    # await db.refresh(invoice)
+    await db.refresh(invoice)
+    await state_manager.send_invoice_state(invoice)
 
     response.headers["X-Request-Id"] = x_request_id
 

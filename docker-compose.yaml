@@ -8,6 +8,11 @@ services:
     env_file:
      - config/.env
 
+  rabbitmq:
+    image: rabbitmq:3.9.13-alpine
+    env_file:
+      - config/.env
+
   payment_gateway:
     image: payment_gateway:0.0.1
     build:
