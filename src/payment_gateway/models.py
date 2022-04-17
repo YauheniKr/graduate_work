@@ -16,16 +16,9 @@ from db.postgres import Base
 
 
 class InvoiceState(enum.Enum):
-    not_paid = 1
+    unpaid = 1
     paid = 2
     failed = 3
-
-
-invoice_status_names = {
-    InvoiceState.not_paid: 'unpaid',
-    InvoiceState.paid: 'paid',
-    InvoiceState.failed: 'failed',
-}
 
 
 class Invoice(Base):
@@ -41,7 +34,7 @@ class Invoice(Base):
 
     state = Column(
         Enum(InvoiceState),
-        default=InvoiceState.not_paid,
+        default=InvoiceState.unpaid,
         nullable=False
     )
 

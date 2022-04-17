@@ -4,7 +4,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from models import Invoice, invoice_status_names
+from models import Invoice
 
 
 class ResponseInvoice(BaseModel):
@@ -16,7 +16,7 @@ class ResponseInvoice(BaseModel):
     def from_db_model(cls, obj):
         return cls(
             id=obj.id,
-            state=invoice_status_names[obj.state],
+            state=obj.state.name,
             created_at=obj.created_at,
         )
 
