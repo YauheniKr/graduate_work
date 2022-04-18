@@ -49,3 +49,4 @@ class Invoice(Base):
     )
 
     x_request_id = Column(String, nullable=False, unique=True)
+    checkout_id = Column(String, nullable=True, unique=False)

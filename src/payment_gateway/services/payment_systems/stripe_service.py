@@ -38,7 +38,11 @@ class StripePaymentSystem(PaymentSystem):
                 cancel_url='http://localhost:8001/cancel.html',
             )
         except Exception as exc:
+            logger.error(f'Checkout session error: {exc}')
             raise exc
         logger.debug(f'Checkout URL LINK: {checkout_session.url}')
-        return CheckoutInfo(checkout_url=checkout_session.url)
+        return CheckoutInfo(
+            checkout_id=checkout_session.stripe_id,
+            checkout_url=checkout_session.url,
+        )
 

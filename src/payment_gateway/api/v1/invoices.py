@@ -70,14 +70,14 @@ async def create_invoice(
             status_code=HTTPStatus.FORBIDDEN,
             detail="There is no x_request_id in header"
         )
-
     payment_system = get_payment_system()
 
     invoice = invoice_request.to_db_model()
     invoice.x_request_id = x_request_id
 
     checkout_info = await payment_system.create_checkout(invoice)
-
+    invoice.checkout_id = checkout_info.checkout_id
+    # FIXME: ниже при попытке зафиксировать транзакцию ошибка. похоже миграция не отрабатывает
     db.add(invoice)
 
     try:
