@@ -20,7 +20,7 @@ class ResponseInvoiceWithCheckout(BaseModel):
 
 
 @router.post('/webhook', summary='Test payment webhook')
-async def set_payment_satate(
+async def set_payment_state(
     data: ResponseInvoiceWithCheckout,
     db: AsyncSession = Depends(get_session),
     state_manager=Depends(get_invoices_state_manager),

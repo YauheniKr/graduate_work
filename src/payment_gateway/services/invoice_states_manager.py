@@ -25,7 +25,7 @@ class InvoiceStatesManager:
     )
     async def start(self):
         self.connection = await aio_pika.connect(
-            self.ampq_uri
+           self.ampq_uri
         )
 
         channel = await self.connection.channel()

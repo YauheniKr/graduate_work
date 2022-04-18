@@ -2,9 +2,10 @@ import json
 import stripe
 from fastapi import APIRouter, Depends, status, Request
 from fastapi.responses import JSONResponse
+from core.settings import settings
 
-stripe.api_key = 'sk_test_51Kn6PyEiipYEZVY2p7o4tcgjz8HDMyShLBUqHxBHmfsn4RzILaKYUb1ceGnGXHZXQraos39BfVWYVAswHYPceD6V00XSZSQCXk'
-endpoint_secret = 'whsec_49285e36cbc6da393d7f06c3ce2637d96e217c54bc866bd05054bd8aa8f754a2'
+stripe.api_key = settings.api_key
+endpoint_secret = settings.api_webhook_key
 
 router = APIRouter()
 
@@ -13,7 +14,6 @@ router = APIRouter()
 async def webhook(request: Request):
     event = None
     data = await request.body()
-
     try:
         event = json.loads(data)
     except Exception as e:
@@ -39,6 +39,9 @@ async def webhook(request: Request):
         print('Payment for {} succeeded'.format(payment_intent['amount']))
         # Then define and call a method to handle the successful payment intent.
         # handle_payment_intent_succeeded(payment_intent)
+    elif event['type'] == 'checkout.session.completed':
+        checkout_session = event['data']['object']  # contains a stripe.PaymentMethod
+        print('✅ Payment session for {} succeeded'.format(checkout_session['amount_total']))
     elif event['type'] == 'payment_method.attached':
         payment_method = event['data']['object']  # contains a stripe.PaymentMethod
         # Then define and call a method to handle the successful attachment of a PaymentMethod.
