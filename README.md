@@ -19,7 +19,9 @@ body:
   "product_name": "subscription, 1 month",
   "product_count": 2,
   "product_price_currency": "USD",
-  "product_unit_price": 10
+  "product_unit_price": 10,
+  "success_url": "http://..success",
+  "cancel_url": "http://..cancel"
 }
 ```
 
