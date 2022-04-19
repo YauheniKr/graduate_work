@@ -2,12 +2,18 @@
   <q-page class="flex flex-center">
     
     <div class="q-pa-md" style="max-width: 400px">
-    <h4>Купи подписку</h4>
+    
+    <q-btn label="Войти" color="primary" v-if="!user" @click="login" />
+    <div v-if="user"> {{ greeting }} </div>
+    <div v-if="user"> {{ userStatus }} </div>
+
     <q-form
       @submit="onSubmit"
       @reset="onReset"
       class="q-gutter-md"
+      v-if="user"
     >
+      <h4>{{ motivation }}</h4>
       <q-input
         filled
         type="number"
@@ -20,7 +26,7 @@
       />
 
       <div>
-        <q-btn label="Купить" type="submit" color="primary"/>
+        <q-btn label="Купить" type="submit" color="primary" :disabled="!user"/>
       </div>
     </q-form>
 
@@ -35,14 +41,18 @@
 
 <script setup>
 import { ref } from 'vue'
-
+import jwt_decode from "jwt-decode"
 
 const monthCount=ref(3);
 const history=ref();
+const greeting=ref();
+const userStatus=ref();
+const motivation=ref("Купить подписку");
 
-function onSubmit() {
-  console.log('Купить ' + monthCount.value + ' месяца(ев) подписки')
 
+const user=ref();
+
+function login() {
   fetch('http://127.0.0.1/api/v1/auth/user/login/', {
     method: 'POST',
     body: JSON.stringify({"password": "tochange", "username": "alisovenko"}),
@@ -55,22 +65,39 @@ function onSubmit() {
   })
   .then((data) => {
     console.log(data.access_token);
+    user.value = data.access_token
 
-    fetch('http://127.0.0.1/api/v1/auth/user/history/?limit=10&page=1', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + data.access_token
-      }
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      history.value = data;
-    });
+    var decoded = jwt_decode(user.value);
+    console.log(decoded);
 
+
+    greeting.value = 'Hello, ' + decoded.sub + '!'
+
+    if ('vip' in decoded){
+      userStatus.value = ' You are VIP! )'
+      motivation.value = 'Продли подписку'
+    }else{
+      userStatus.value = ' You are not VIP ('      
+      motivation.value = 'Купи подписку'
+    }
   });
+}
+
+function onSubmit() {
+  fetch('http://127.0.0.1/api/v1/auth/user/history/?limit=10&page=1', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + user.value
+    }
+  })
+  .then((response) => {
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data);
+    history.value = data;
+  });
+
 }
 
 </script>
