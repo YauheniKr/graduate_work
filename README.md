@@ -47,7 +47,8 @@ responses:
 {
   "id": <String: id инвойса>,
   "created_at": <String: метка времени>,
-  "state": <String: статус инвойса>
+  "state": <String: статус инвойса>,
+  "x_request_id": <String: request id запроса на основании которого был создан invoice>
 }
 ```
 
@@ -56,7 +57,8 @@ responses:
 {
   "id": "599f2636-6e51-4d86-8e39-ff72e56daf47",
   "created_at": "2022-04-17T11:47:54.485937",
-  "state": "unpaid"
+  "state": "unpaid",
+  "x_request_id": "599f2636-6e51-4d86-8e39-ff72e56daf47",
 }
 ```
 ``
