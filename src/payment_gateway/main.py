@@ -1,12 +1,8 @@
+from api.v1 import invoices, ping
+from api.v1.payments import fakepaysystem, stripe_api
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
-
-from api.v1 import ping
-from api.v1 import invoices
-from api.v1.payments import fakepaysystem, stripe_api
-
 from services.invoice_states_manager import invoice_manager
-
 
 app = FastAPI(
     title='PAYGATEWAY',

@@ -10,5 +10,5 @@ class PaymentSystem:
         id = 'some payment id'
         return CheckoutInfo(
             checkout_id=id,
-            checkout_url=url
+            checkout_url=url,
         )

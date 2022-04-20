@@ -19,10 +19,11 @@ router = APIRouter()
 
 
 @router.post('/webhook', summary='Stripe webhook')
-async def webhook(request: Request,
-                  db: AsyncSession = Depends(get_session),
-                  state_manager=Depends(get_invoices_state_manager),
-                  ):
+async def webhook(
+    request: Request,
+    db: AsyncSession = Depends(get_session),
+    state_manager=Depends(get_invoices_state_manager),
+    ):
     event = None
     request_data = await request.body()
     try:

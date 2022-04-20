@@ -17,6 +17,5 @@ class InvoiceStateAMPQMessage(BaseModel):
             id=obj.id,
             created_at=obj.created_at,
             state=obj.state.name,
-            checkout_id=obj.checkout_id
-
+            checkout_id=obj.checkout_id,
         )

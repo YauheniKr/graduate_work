@@ -43,7 +43,7 @@ class InvoiceStatesManager:
         await channel.default_exchange.publish(
             Message(
                 bytes(message.json(), 'utf-8'),
-                content_type="text/plain",
+                content_type='text/plain',
             ),
             self.routing_key,
         )
@@ -51,7 +51,7 @@ class InvoiceStatesManager:
 
 invoice_manager = InvoiceStatesManager(
     settings.rabbitmq_uri,
-    settings.rabbitmq_queue
+    settings.rabbitmq_queue,
 )
 
 

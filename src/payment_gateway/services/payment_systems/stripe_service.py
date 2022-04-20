@@ -45,4 +45,3 @@ class StripePaymentSystem(PaymentSystem):
             checkout_id=checkout_session.stripe_id,
             checkout_url=checkout_session.url,
         )
-
