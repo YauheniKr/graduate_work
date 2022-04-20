@@ -2,17 +2,9 @@ import datetime
 import enum
 import uuid
 
-from sqlalchemy import Column
-from sqlalchemy import (
-    DateTime,
-    Enum,
-    Float,
-    String,
-    Integer,
-)
-from sqlalchemy.dialects.postgresql import UUID
-
 from db.postgres import Base
+from sqlalchemy import Column, DateTime, Enum, Float, Integer, String
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class InvoiceState(enum.Enum):
@@ -49,3 +41,4 @@ class Invoice(Base):
     )
 
     x_request_id = Column(String, nullable=False, unique=True)
+    checkout_id = Column(String, nullable=True, unique=False)

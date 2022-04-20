@@ -1,29 +1,22 @@
+import logging
 import uuid
-
 from http import HTTPStatus
 from typing import List
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    Header,
-    HTTPException,
-    Response,
-)
+from db.postgres import get_session
+from fastapi import APIRouter, Depends, Header, HTTPException, Response
+from models import Invoice
+from services.invoice_states_manager import get_invoices_state_manager
+from services.payment_systems_manager import get_payment_system
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from db.postgres import get_session
-from models import Invoice
-from services.payment_systems_manager import get_payment_system
-from services.invoice_states_manager import get_invoices_state_manager
+from .models import (InvoiceRequest, ResponseInvoice,
+                     ResponseInvoiceWithCheckout)
 
-from .models import (
-    ResponseInvoice,
-    InvoiceRequest,
-    ResponseInvoiceWithCheckout,
-)
+
+logger = logging.getLogger('paygateway.api.invoices')
 
 router = APIRouter()
 
@@ -39,6 +32,7 @@ async def get_invoices(
     x_request_id: str = Header(None, example=str(uuid.uuid4())),
 ):
     if not x_request_id:
+        logger.error('Got request without x_request_id')
         raise HTTPException(
             status_code=HTTPStatus.FORBIDDEN,
             detail="There is no x_request_id in header"
@@ -66,17 +60,24 @@ async def create_invoice(
     x_request_id: str = Header(None, example=str(uuid.uuid4())),
 ):
     if not x_request_id:
+        logger.error('Got request without x_request_id')
         raise HTTPException(
             status_code=HTTPStatus.FORBIDDEN,
             detail="There is no x_request_id in header"
         )
-
     payment_system = get_payment_system()
 
     invoice = invoice_request.to_db_model()
     invoice.x_request_id = x_request_id
 
-    checkout_info = await payment_system.create_checkout(invoice)
+    try:
+        checkout_info = await payment_system.create_checkout(invoice)
+        invoice.checkout_id = checkout_info.checkout_id
+    except Exception:
+        logger.exception('Cann\'t create checkout')
+        raise HTTPException(
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
 
     db.add(invoice)
 
@@ -84,6 +85,7 @@ async def create_invoice(
         await db.commit()
 
     except IntegrityError:
+        logger.exception('Cann\'t create invoice in db')
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT,
         )
