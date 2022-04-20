@@ -42,6 +42,7 @@
 <script setup>
 import { ref } from 'vue'
 import jwt_decode from "jwt-decode"
+// import { openURL } from 'quasar'
 
 const monthCount=ref(3);
 const history=ref();
@@ -96,7 +97,30 @@ function onSubmit() {
   })
   .then((data) => {
     console.log(data);
-    history.value = data;
+    
+    // openURL(
+    //   data,
+    //   'paymentWindow',
+    //   // 'popup=true'
+    //   {
+    //     popup: true,
+    //     // scrollbars: false,
+    //     // resizable: false,
+    //     // status: false,
+    //     // location: false,
+    //     // toolbar: false,
+    //     // menubar: false,   
+    //     width: 600,
+    //     height: 300,
+    //     left: 100,
+    //     top: 100
+    //   }
+    // )
+    let windowFeatures = "left=100,top=100,width=1200,height=640";
+
+    window.open(data, "payWindow", windowFeatures);
+    // window.open(data, '_blank').focus();
+    // history.value = data;
   });
 
 }
