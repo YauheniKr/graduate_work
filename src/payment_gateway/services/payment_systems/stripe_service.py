@@ -1,5 +1,7 @@
 import logging
 
+from typing import Optional
+
 import stripe
 from core.settings import settings
 from models import Invoice
@@ -13,7 +15,11 @@ logger = logging.getLogger('paygateway.services.payment_systems.stripe')
 
 class StripePaymentSystem(PaymentSystem):
 
-    async def create_checkout(self, invoice: Invoice) -> CheckoutInfo:
+    async def create_checkout(
+        self, invoice: Invoice,
+        success_url: Optional[str] = None,
+        cancel_url: Optional[str] = None,
+    ) -> CheckoutInfo:
 
         checkout_line_items = [
             {

@@ -71,7 +71,11 @@ async def create_invoice(
     invoice.x_request_id = x_request_id
 
     try:
-        checkout_info = await payment_system.create_checkout(invoice)
+        checkout_info = await payment_system.create_checkout(
+            invoice,
+            invoice_request.success_url,
+            invoice_request.cancel_url,
+        )
         invoice.checkout_id = checkout_info.checkout_id
     except Exception:
         logger.exception('Cann\'t create checkout')

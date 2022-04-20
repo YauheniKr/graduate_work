@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import Optional
 
 from models import Invoice
 from pydantic import BaseModel
@@ -24,6 +25,9 @@ class InvoiceRequest(BaseModel):
     product_count: int = 2
     product_price_currency: str = 'USD'
     product_unit_price: float = 10
+
+    success_url: Optional[str] = None
+    cancel_url: Optional[str] = None
 
     def to_db_model(self):
         return Invoice(

@@ -10,6 +10,7 @@ class InvoiceStateAMPQMessage(BaseModel):
     created_at: datetime
     state: str
     checkout_id: str
+    x_request_id: str
 
     @classmethod
     def from_db_model(cls, obj: Invoice):
@@ -18,4 +19,5 @@ class InvoiceStateAMPQMessage(BaseModel):
             created_at=obj.created_at,
             state=obj.state.name,
             checkout_id=obj.checkout_id,
+            x_request_id=obj.x_request_id,
         )
