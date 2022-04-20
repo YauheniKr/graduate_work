@@ -77,7 +77,6 @@ async def create_invoice(
 
     checkout_info = await payment_system.create_checkout(invoice)
     invoice.checkout_id = checkout_info.checkout_id
-    # FIXME: ниже при попытке зафиксировать транзакцию ошибка. похоже миграция не отрабатывает
     db.add(invoice)
 
     try:

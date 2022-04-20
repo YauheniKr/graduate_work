@@ -3,8 +3,13 @@ import logging
 
 import stripe
 from core.settings import settings
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, Request, Depends, status
 from fastapi.responses import JSONResponse
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from services.invoice_states_manager import get_invoices_state_manager
+from db.postgres import get_session
+from models import Invoice, InvoiceState
 
 stripe.api_key = settings.api_key
 endpoint_secret = settings.api_webhook_key
@@ -14,7 +19,10 @@ router = APIRouter()
 
 
 @router.post('/webhook', summary='Stripe webhook')
-async def webhook(request: Request):
+async def webhook(request: Request,
+                  db: AsyncSession = Depends(get_session),
+                  state_manager=Depends(get_invoices_state_manager),
+                  ):
     event = None
     request_data = await request.body()
     try:
@@ -50,9 +58,18 @@ async def webhook(request: Request):
         logger.debug(f'Payment for {payment_intent["amount"]} succeeded')
     elif event['type'] == 'checkout.session.completed':
         checkout_session = event['data']['object']
-        sum_amount = checkout_session['amount_total']
-        logger.debug(
-            f'✅ Payment session for {sum_amount} succeeded',
+        invoices = await db.execute(select(Invoice).where(Invoice.checkout_id == checkout_session['id']))
+        invoice = invoices.one()[0]
+        if checkout_session['payment_status'] == 'paid':
+            invoice.state = InvoiceState.paid
+            db.add(invoice)
+            await db.commit()
+            await state_manager.send_invoice_state(invoice)
+            logger.debug(
+                f'✅ Payment {checkout_session["id"]} session for succeeded',
+            )
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
         )
     else:
         # Unexpected event type
