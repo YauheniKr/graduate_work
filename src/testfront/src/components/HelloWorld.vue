@@ -84,11 +84,12 @@ function login() {
 }
 
 function onSubmit() {
-  fetch('http://127.0.0.1/api/v1/auth/user/history/?limit=10&page=1', {
-    method: 'GET',
+  fetch('http://127.0.0.1/api/v1/payment/', {
+    method: 'POST',
     headers: {
       'Authorization': 'Bearer ' + user.value
-    }
+    },
+    body: JSON.stringify({"product_id": "8b14aa60-6b09-4ced-a344-aca486419592"}),
   })
   .then((response) => {
     return response.json();
