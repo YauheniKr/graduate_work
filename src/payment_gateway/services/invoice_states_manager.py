@@ -1,11 +1,11 @@
 import aio_pika
 import backoff
-
 from aio_pika import Message
-# from aio_pika.connection import Connection
-
 from core.settings import settings
 from models import Invoice
+
+# from aio_pika.connection import Connection
+
 
 from.models import InvoiceStateAMPQMessage
 
@@ -25,7 +25,7 @@ class InvoiceStatesManager:
     )
     async def start(self):
         self.connection = await aio_pika.connect(
-            self.ampq_uri
+           self.ampq_uri
         )
 
         channel = await self.connection.channel()
@@ -43,7 +43,7 @@ class InvoiceStatesManager:
         await channel.default_exchange.publish(
             Message(
                 bytes(message.json(), 'utf-8'),
-                content_type="text/plain",
+                content_type='text/plain',
             ),
             self.routing_key,
         )
@@ -51,7 +51,7 @@ class InvoiceStatesManager:
 
 invoice_manager = InvoiceStatesManager(
     settings.rabbitmq_uri,
-    settings.rabbitmq_queue
+    settings.rabbitmq_queue,
 )
 
 

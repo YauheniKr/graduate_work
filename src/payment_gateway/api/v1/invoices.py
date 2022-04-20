@@ -1,30 +1,19 @@
 import logging
 import uuid
-
 from http import HTTPStatus
 from typing import List
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    Header,
-    HTTPException,
-    Response,
-)
+from db.postgres import get_session
+from fastapi import APIRouter, Depends, Header, HTTPException, Response
+from models import Invoice
+from services.invoice_states_manager import get_invoices_state_manager
+from services.payment_systems_manager import get_payment_system
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from db.postgres import get_session
-from models import Invoice
-from services.payment_systems_manager import get_payment_system
-from services.invoice_states_manager import get_invoices_state_manager
-
-from .models import (
-    ResponseInvoice,
-    InvoiceRequest,
-    ResponseInvoiceWithCheckout,
-)
+from .models import (InvoiceRequest, ResponseInvoice,
+                     ResponseInvoiceWithCheckout)
 
 
 logger = logging.getLogger('paygateway.api.invoices')
@@ -76,7 +65,6 @@ async def create_invoice(
             status_code=HTTPStatus.FORBIDDEN,
             detail="There is no x_request_id in header"
         )
-
     payment_system = get_payment_system()
 
     invoice = invoice_request.to_db_model()
@@ -84,6 +72,7 @@ async def create_invoice(
 
     try:
         checkout_info = await payment_system.create_checkout(invoice)
+        invoice.checkout_id = checkout_info.checkout_id
     except Exception:
         logger.exception('Cann\'t create checkout')
         raise HTTPException(

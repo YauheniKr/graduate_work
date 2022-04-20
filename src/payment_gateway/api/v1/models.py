@@ -1,10 +1,8 @@
 import uuid
-
 from datetime import datetime
 
-from pydantic import BaseModel
-
 from models import Invoice
+from pydantic import BaseModel
 
 
 class ResponseInvoice(BaseModel):
