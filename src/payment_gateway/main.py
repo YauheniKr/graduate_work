@@ -1,8 +1,12 @@
+import logging
+
 from api.v1 import invoices, ping
 from api.v1.payments import fakepaysystem, stripe_api
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from services.invoice_states_manager import invoice_manager
+from core.logging import create_logging_cfg
+from core.settings import settings
 
 app = FastAPI(
     title='PAYGATEWAY',
@@ -15,6 +19,12 @@ app = FastAPI(
 @app.on_event('startup')
 async def startup():
     await invoice_manager.start()
+
+    logging.config.dictConfig(
+        create_logging_cfg(
+            'DEBUG' if settings.debug else 'INFO'
+        )
+    )
 
 
 @app.on_event('shutdown')
