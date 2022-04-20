@@ -3,13 +3,13 @@ import logging
 
 import stripe
 from core.settings import settings
-from fastapi import APIRouter, Request, Depends, status
+from db.postgres import get_session
+from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import JSONResponse
+from models import Invoice, InvoiceState
+from services.invoice_states_manager import get_invoices_state_manager
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from services.invoice_states_manager import get_invoices_state_manager
-from db.postgres import get_session
-from models import Invoice, InvoiceState
 
 stripe.api_key = settings.api_key
 endpoint_secret = settings.api_webhook_key

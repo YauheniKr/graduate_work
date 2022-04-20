@@ -1,29 +1,18 @@
 import uuid
-
 from http import HTTPStatus
 from typing import List
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    Header,
-    HTTPException,
-    Response,
-)
+from db.postgres import get_session
+from fastapi import APIRouter, Depends, Header, HTTPException, Response
+from models import Invoice
+from services.invoice_states_manager import get_invoices_state_manager
+from services.payment_systems_manager import get_payment_system
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from db.postgres import get_session
-from models import Invoice
-from services.payment_systems_manager import get_payment_system
-from services.invoice_states_manager import get_invoices_state_manager
-
-from .models import (
-    ResponseInvoice,
-    InvoiceRequest,
-    ResponseInvoiceWithCheckout,
-)
+from .models import (InvoiceRequest, ResponseInvoice,
+                     ResponseInvoiceWithCheckout)
 
 router = APIRouter()
 

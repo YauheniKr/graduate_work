@@ -1,15 +1,13 @@
 import uuid
 
+from db.postgres import get_session
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from models import Invoice, InvoiceState
 from pydantic import BaseModel
+from services.invoice_states_manager import get_invoices_state_manager
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-
-from db.postgres import get_session
-from models import Invoice, InvoiceState
-from services.invoice_states_manager import get_invoices_state_manager
-
 
 router = APIRouter()
 

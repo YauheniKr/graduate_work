@@ -1,11 +1,11 @@
 import aio_pika
 import backoff
-
 from aio_pika import Message
-# from aio_pika.connection import Connection
-
 from core.settings import settings
 from models import Invoice
+
+# from aio_pika.connection import Connection
+
 
 from.models import InvoiceStateAMPQMessage
 
