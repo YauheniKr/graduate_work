@@ -14,3 +14,9 @@ services:
   rabbitmq:
     ports:
       - 5672:5672
+
+  stripe-cli:
+    image: stripe/stripe-cli:v1.8.6
+    command: listen --forward-to http://payment_gateway:8000/api/v1/payments/stripe/webhook
+    env_file:
+      - config/.env
