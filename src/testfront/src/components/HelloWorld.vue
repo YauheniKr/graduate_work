@@ -75,10 +75,10 @@ function login() {
     greeting.value = 'Hello, ' + decoded.sub + '!'
 
     if (decoded.subscribe_expired){
-      userStatus.value = ' You are VIP! )'
+      userStatus.value = ' У вас уже есть подписка до ' + decoded.subscribe_expired
       motivation.value = 'Продли подписку'
     }else{
-      userStatus.value = ' You are not VIP ('      
+      userStatus.value = ' У вас нет подписки'      
       motivation.value = 'Купи подписку'
     }
   });
