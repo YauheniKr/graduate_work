@@ -1,0 +1,23 @@
+@startuml
+User -> AuthService: Жмет "Отменить"
+
+AuthService -> MovieTheaterPaymentSystem: Создание ?инвойса? для отмены\n(сколько денег вернуть)
+
+AuthService -> User: Запрос на возврат принят
+
+MovieTheaterPaymentSystem -> PaymentSystem: Возврат денег
+
+PaymentSystem -> MovieTheaterPaymentSystem: Возврат одобрен
+
+MovieTheaterPaymentSystem -> NotificationService: Сообщает пользователю\n что деньги возвращены
+MovieTheaterPaymentSystem -> AuthService: Выставить некий флаг,\n чтобы в токене удалилась инфа\n что пользователь VIP
+
+== Use subscription ==
+
+User -> FilmsServise: Пользователь идет на страницу сервиса фильмов
+
+FilmsServise -> AuthService: Получение\Обновление токена
+AuthService -> FilmsServise: Токен без VIP
+
+FilmsServise -> User: Только бесплатные фильмы
+@enduml
