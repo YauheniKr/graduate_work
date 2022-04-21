@@ -40,8 +40,8 @@ class StripePaymentSystem(PaymentSystem):
                 line_items=checkout_line_items,
                 mode='payment',
                 # FIXME: изменить ссылка на указанные в ручке
-                success_url='http://localhost:8001/success.html',
-                cancel_url='http://localhost:8001/cancel.html',
+                success_url=success_url,
+                cancel_url=cancel_url,
             )
         except Exception as exc:
             logger.error(f'Checkout session error: {exc}')
