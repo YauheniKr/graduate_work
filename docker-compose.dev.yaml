@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  payment_gateway:
+    volumes:
+      - ./src/payment_gateway:/opt/payment_gateway
+
+    command: uvicorn --host 0.0.0.0 --port 8000 --reload main:app
+
+  payment_gateway_db:
+    ports:
+      - 5432:5432
+
+  rabbitmq:
+    ports:
+      - 5672:5672
+
+  stripe-cli:
+    image: stripe/stripe-cli:v1.8.6
+    command: listen --forward-to http://payment_gateway:8000/api/v1/payments/stripe/webhook
+    env_file:
+      - config/.env
