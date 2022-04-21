@@ -2,7 +2,7 @@ LOG_FORMAT = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 LOG_DEFAULT_HANDLERS = ['console', ]
 
 
-def create_logging_cfg(level='INFO'):
+def create_logging_cfg(level='INFO') -> dict:
     return {
         'version': 1,
         'disable_existing_loggers': False,

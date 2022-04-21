@@ -23,19 +23,19 @@ class InvoiceStatesManager:
         ),
         max_tries=10
     )
-    async def start(self):
+    async def start(self) -> None:
         self.connection = await aio_pika.connect(
-           self.ampq_uri
+            self.ampq_uri
         )
 
         channel = await self.connection.channel()
 
         await channel.declare_queue(self.queue_name, auto_delete=False)
 
-    async def stop(self):
+    async def stop(self) -> None:
         await self.connection.close()
 
-    async def send_invoice_state(self, invoice: Invoice):
+    async def send_invoice_state(self, invoice: Invoice) -> None:
         channel = await self.connection.channel()
 
         message = InvoiceStateAMPQMessage.from_db_model(invoice)
@@ -55,5 +55,5 @@ invoice_manager = InvoiceStatesManager(
 )
 
 
-def get_invoices_state_manager():
+def get_invoices_state_manager() -> InvoiceStatesManager:
     return invoice_manager

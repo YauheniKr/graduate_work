@@ -9,7 +9,9 @@ from models import Invoice
 from .base import PaymentSystem
 from .models import CheckoutInfo
 
+
 stripe.api_key = settings.api_key
+
 logger = logging.getLogger('paygateway.services.payment_systems.stripe')
 
 
