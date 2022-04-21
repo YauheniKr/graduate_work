@@ -30,7 +30,7 @@ class InvoiceStatesManager:
 
         channel = await self.connection.channel()
 
-        await channel.declare_queue(self.queue_name, auto_delete=True)
+        await channel.declare_queue(self.queue_name, auto_delete=False)
 
     async def stop(self):
         await self.connection.close()
