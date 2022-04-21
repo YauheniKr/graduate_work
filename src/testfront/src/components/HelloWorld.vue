@@ -74,7 +74,7 @@ function login() {
 
     greeting.value = 'Hello, ' + decoded.sub + '!'
 
-    if ('vip' in decoded){
+    if (decoded.subscribe_expired){
       userStatus.value = ' You are VIP! )'
       motivation.value = 'Продли подписку'
     }else{
@@ -90,37 +90,20 @@ function onSubmit() {
     headers: {
       'Authorization': 'Bearer ' + user.value
     },
-    body: JSON.stringify({"product_id": "8b14aa60-6b09-4ced-a344-aca486419592"}),
+    body: JSON.stringify(
+      {
+        "product_id": "8b14aa60-6b09-4ced-a344-aca486419592",
+        "success_url": "http://localhost:8080/",
+        "cancel_url": "http://localhost:8080/"
+      }
+    ),
   })
   .then((response) => {
     return response.json();
   })
   .then((data) => {
     console.log(data);
-    
-    // openURL(
-    //   data,
-    //   'paymentWindow',
-    //   // 'popup=true'
-    //   {
-    //     popup: true,
-    //     // scrollbars: false,
-    //     // resizable: false,
-    //     // status: false,
-    //     // location: false,
-    //     // toolbar: false,
-    //     // menubar: false,   
-    //     width: 600,
-    //     height: 300,
-    //     left: 100,
-    //     top: 100
-    //   }
-    // )
-    let windowFeatures = "left=100,top=100,width=1200,height=640";
-
-    window.open(data, "payWindow", windowFeatures);
-    // window.open(data, '_blank').focus();
-    // history.value = data;
+    window.open(data, "_self");
   });
 
 }
