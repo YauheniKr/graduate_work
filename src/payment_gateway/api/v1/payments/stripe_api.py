@@ -7,7 +7,7 @@ from db.postgres import get_session
 from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import JSONResponse
 from models import Invoice, InvoiceState
-from services.invoice_states_manager import get_invoices_state_manager
+from services.invoice_states_manager import get_invoices_state_manager, InvoiceStatesManager
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -22,8 +22,8 @@ router = APIRouter()
 async def webhook(
     request: Request,
     db: AsyncSession = Depends(get_session),
-    state_manager=Depends(get_invoices_state_manager),
-    ):
+    state_manager: InvoiceStatesManager = Depends(get_invoices_state_manager),
+):
     event = None
     request_data = await request.body()
     try:

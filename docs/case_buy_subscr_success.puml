@@ -1,0 +1,23 @@
+@startuml
+User -> AuthService: Жмет "Купить"
+
+AuthService -> MovieTheaterPaymentSystem: Создание инвойса
+
+MovieTheaterPaymentSystem -> User: Перенаправление на Платежную систему
+
+User -> PaymentSystem: Совершение оплаты
+
+PaymentSystem -> MovieTheaterPaymentSystem: Платеж пройден
+
+MovieTheaterPaymentSystem -> NotificationService: Сообщает пользователю\n что план продлен
+MovieTheaterPaymentSystem -> AuthService: Выставить некий флаг,\n чтобы в токене появилась инфа\n что пользователь VIP
+
+== Use subscription ==
+
+User -> FilmsServise: Пользователь идет на страницу сервиса фильмов
+
+FilmsServise -> AuthService: Получение\Обновление токена
+AuthService -> FilmsServise: Токен с VIP
+
+FilmsServise -> User: Все фильмы
+@enduml

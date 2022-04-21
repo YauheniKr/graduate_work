@@ -1,0 +1,21 @@
+@startuml
+
+skinparam component {
+    backgroundColor<<new>> #438dd5
+    backgroundColor<<existing >> #85bbf0
+}
+
+
+actor User
+component "ЛK" as CinemaPaymentServiceClient <<existing>>
+component CinemaPaymentService <<new>>
+component "Сервис нотификации" as NotificationService <<existing>>
+
+User <-down-> CinemaPaymentServiceClient: Покупка или возврат \n продукта (подписка, фильм)
+
+CinemaPaymentServiceClient <-down-> CinemaPaymentService: Создание запроса на покупку продукта \n Оплата \n Отслеживание состояния продукта 
+
+CinemaPaymentService -right-> NotificationService: Сообщения о покупке, возврате, оплате
+NotificationService -up-> User
+
+@enduml

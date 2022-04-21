@@ -1,0 +1,28 @@
+@startuml
+User -> FrontPersonalArea: Жмет "Купить"
+
+FrontPersonalArea -> PaymentGateway: Создание инвойса
+
+PaymentGateway -> User: Перенаправление на Платежную систему
+
+User -> PaymentSystem: Совершение оплаты
+
+PaymentSystem -> PaymentGateway: Платеж пройден
+
+PaymentGateway -> NotificationService: Сообщает пользователю\n что платеж прошел
+
+PaymentGateway -> PersonalArea: Сообщает что пользователь купил план
+
+PersonalArea -> NotificationService: Сообщает пользователю\n что план продлен
+
+PersonalArea -> AuthService: Выставить некий флаг,\n чтобы в токене появилась инфа\n что пользователь VIP
+
+User -> FrontFilmsServise: Пользователь идет на страницу сервиса фильмов
+
+FrontFilmsServise -> AuthService: Получение\Обновление токена
+AuthService -> FrontFilmsServise: Токен с VIP
+
+FrontFilmsServise -> FilmsServise: Запрос фильмов
+FilmsServise -> FrontFilmsServise: Все фильмы
+FrontFilmsServise -> User: Все фильмы
+@enduml
