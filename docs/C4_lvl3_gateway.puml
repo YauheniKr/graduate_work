@@ -1,17 +1,17 @@
 @startuml
 
 skinparam component {
-    backgroundColor<<external>> #438dd5
+    backgroundColor<<dev>> #8577a0
+    backgroundColor<<external>> #85fff0
     backgroundColor<<internal>> #85bbf0
 }
 
 component "Платежная система" as PaymentSystem <<external>>
-component AuthService <<external>>
-component "Личный кабинет" as PersonalArea <<external>>
+component "Сервис авторизации" as AuthService <<external>>
 component "Сервис нотификации" as NotificationService <<external>>
 component InvoiceStatesQueue <<external>>
 note bottom of InvoiceStatesQueue
-    RabbitMQ + API сервиc для универсальноги интерфейса
+    RabbitMQ
 end note
 
 component PaymentGateway {
@@ -19,25 +19,25 @@ component PaymentGateway {
     component CreateInvoiceView <<internal>>
     component RefundInvoiceView <<internal>>
 
-    component PaymentNotificationView <<internal>>
+    component PaymentWebhook <<internal>>
 }
 
 database PaymentGatewayDb
 PaymentGateway <--> PaymentGatewayDb
 
-PaymentNotificationView .up.> InvoiceStatesQueue: Отправка сообщения о статусе invoice
-PersonalArea .left.> InvoiceStatesQueue: Получение сообщение о статусе invoice
+PaymentWebhook .up.> InvoiceStatesQueue: Отправить сообщения о статусе invoice
+AuthService .left.> InvoiceStatesQueue: Получить сообщение о статусе invoice
 
-PersonalArea --> CreateInvoiceView: Создать инвойс \n [http json]
-PersonalArea --> RefundInvoiceView: Вернуть деньги \n [http json]
-PersonalArea --> GetInvoicesView: Получить список инвойсов [http json]
+AuthService --> CreateInvoiceView: Создать инвойс \n [http json]
+AuthService --> RefundInvoiceView: Вернуть деньги \n [http json]
+AuthService --> GetInvoicesView: Получить список инвойсов [http json]
 
 CreateInvoiceView --> AuthService: Запросить данные пользователя
 CreateInvoiceView --> PaymentSystem: Создать платеж
 
-PaymentSystem -up-> PaymentNotificationView
+PaymentSystem -up-> PaymentWebhook
 
-PaymentNotificationView --> NotificationService: Изменение статуса оплаты
+PaymentWebhook --> NotificationService: Изменить статуса оплаты
 CreateInvoiceView --> NotificationService: Сообщить о созданиии инвойса
 RefundInvoiceView --> NotificationService: Сообщить о запросе на возврат денег
 

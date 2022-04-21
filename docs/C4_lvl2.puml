@@ -2,11 +2,14 @@
 
 skinparam component {
     backgroundColor<<new>> #438dd5
+    backgroundColor<<dev>> #8577a0
     backgroundColor<<existing>> #85bbf0
     backgroundColor<<external>> #85fff0
 }
 
-component "Сервис авторизации" as AuthService
+component "ЛK" as CinemaPaymentServiceClient <<existing>>
+
+component "Сервис авторизации" as AuthService <<dev>>
 
 component SynemaPaymentSystem {
     component PaymentGateway <<new>>
@@ -20,7 +23,7 @@ component SynemaPaymentSystem {
 
     component InvoiceStatesQueue <<new>>
     note bottom of InvoiceStatesQueue
-        RabbitMQ + API сервиc для универсальноги интерфейса
+        RabbitMQ
     end note
 }
 
@@ -33,20 +36,18 @@ note bottom of PaymentSystem
     ...
 end note
 
-component AuthService <<existing>>
 
 component "Сервис нотификации" as NotificationService <<existing>>
 
+CinemaPaymentServiceClient --> AuthService: Создать запрос на покупку подписки
+
 PaymentGateway <--> PaymentSystem
-' PaymentGateway -up-> AuthService: запросить данные о пользователе, \n необходимые для оплаты
 PaymentGateway -right-> NotificationService: Оплата зафиксирована
 
 PaymentGateway -left-> InvoiceStatesQueue: Сообщение об изменении статуса
 
-AuthService -down-> PaymentGateway: Создание инвойса
-AuthService -left-> InvoiceStatesQueue: Получение статуса
-AuthService --> NotificationService: Подписка скоро истекает
-
-
+AuthService -down-> PaymentGateway: Создать инвойс
+AuthService -left-> InvoiceStatesQueue: Получить статус инвойса
+AuthService --> NotificationService: Сообщить что подписка скоро истекает
 
 @enduml
