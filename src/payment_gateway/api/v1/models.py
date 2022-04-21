@@ -12,7 +12,7 @@ class ResponseInvoice(BaseModel):
     created_at: datetime
 
     @classmethod
-    def from_db_model(cls, obj):
+    def from_db_model(cls, obj: Invoice) -> None:
         return cls(
             id=obj.id,
             state=obj.state.name,
@@ -29,7 +29,7 @@ class InvoiceRequest(BaseModel):
     success_url: Optional[str] = None
     cancel_url: Optional[str] = None
 
-    def to_db_model(self):
+    def to_db_model(self) -> Invoice:
         return Invoice(
             product_name=self.product_name,
             product_count=self.product_count,

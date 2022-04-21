@@ -12,6 +12,9 @@ services:
     image: rabbitmq:3.9.13-alpine
     env_file:
       - config/.env
+    networks:
+      - default
+      - movies-network
 
   payment_gateway:
     image: payment_gateway:0.0.1
