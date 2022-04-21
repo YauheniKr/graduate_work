@@ -98,6 +98,7 @@ function onSubmit() {
     body: JSON.stringify(
       {
         "product_id": "8b14aa60-6b09-4ced-a344-aca486419592",
+        "product_count": monthCount.value,
         "success_url": "http://localhost:8080/",
         "cancel_url": "http://localhost:8080/"
       }
