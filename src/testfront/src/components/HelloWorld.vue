@@ -5,8 +5,11 @@
     
     <q-btn label="Войти" color="primary" v-if="!user" @click="login" />
     <div v-if="user"> {{ greeting }} </div>
+    <br/>
     <div v-if="user"> {{ userStatus }} </div>
 
+    <br/>
+    <br/>
     <q-form
       @submit="onSubmit"
       @reset="onReset"
@@ -75,7 +78,9 @@ function login() {
     greeting.value = 'Hello, ' + decoded.sub + '!'
 
     if (decoded.subscribe_expired){
-      userStatus.value = ' У вас уже есть подписка до ' + decoded.subscribe_expired
+      const date = new Date(decoded.subscribe_expired);
+
+      userStatus.value = ' У вас уже есть подписка до ' + date.toLocaleDateString("ru-RU")
       motivation.value = 'Продли подписку'
     }else{
       userStatus.value = ' У вас нет подписки'      
