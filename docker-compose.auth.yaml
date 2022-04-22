@@ -13,8 +13,10 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./src/auth/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./src/auth/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./src/testfront/dist:/opt/payment_system_front
+    restart: always
     depends_on:
       - auth_api
 
