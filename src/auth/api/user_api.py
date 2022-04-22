@@ -254,8 +254,7 @@ class GetUserAuthHistory(Resource):
             page=request.args.get('page', 1),
             limit=request.args.get('limit', 5)
         )
-        out = AuthHistoryModel(**auth_record_out)
-        return out
+        return AuthHistoryModel(**auth_record_out)
 
 
 class TokenRefresh(Resource):
