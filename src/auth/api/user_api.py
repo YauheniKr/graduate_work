@@ -98,7 +98,7 @@ class UserLogin(Resource):
           401:
             description: Пароль некорректен
         """
-        from src.app import tracer
+        from app import tracer
         parent_span = tracer.get_span()
         session = create_session()
         user = UserRequest(session)
@@ -243,7 +243,7 @@ class GetUserAuthHistory(Resource):
             auth_history = auth_history.get_auth_record()
             session.close()
         except ExpiredSignatureError:
-            return make_response({'msg': 'token expired'}, 401)
+            return make_response({'msg': 'token expired'}, HTTPStatus.UNAUTHORIZED)
         history = [AuthHistoryBase(id=record.id, timestamp=record.timestamp, user_agent=record.user_agent,
                                    ipaddress=record.ip_address, device=record.device)
                    for record in auth_history]

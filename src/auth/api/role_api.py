@@ -269,7 +269,7 @@ class RoleUserCreateDelete(Resource):
         user_role = user_role.user_add_role(json_data)
         if not user_role:
             return 'User с данной ролью уже существует', HTTPStatus.CONFLICT
-        elif user_role.status_code == 403:
+        elif user_role.status_code == HTTPStatus.FORBIDDEN:
             return user_role
         return user_role
 

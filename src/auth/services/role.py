@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from flask import make_response
 from sqlalchemy.exc import IntegrityError
 
@@ -98,7 +100,7 @@ class RoleUserRequest:
         try:
             self.session.add(role_user)
             self.session.commit()
-            return make_response('created successfully', 200)
+            return make_response('created successfully', HTTPStatus.OK)
         except IntegrityError as error:
             return error.orig.pgerror.split('\n')[1]
 
@@ -110,4 +112,4 @@ class RoleUserRequest:
             return None
         self.session.delete(user_role)
         self.session.commit()
-        return make_response('role deleted', 200)
+        return make_response('role deleted', HTTPStatus.OK)

@@ -1,21 +1,13 @@
 import json
 import logging
+from http import HTTPStatus
 
 import requests
 from flask import Blueprint, request
 from flask_restful import Api, Resource
 
-# from core.config import settings
 from db.global_init import create_session
-# from models.model_user import UserInvoice
-# from models.pydantic_models import AuthUserInvoice
 from services.payment import Payment, UserInvoiceUpdate
-
-# from http import HTTPStatus
-
-# from requests.structures import CaseInsensitiveDict
-# from sqlalchemy import update
-
 
 payment_blueprint = Blueprint('payment', __name__)
 payment_api = Api(payment_blueprint, prefix='/api/v1/')
@@ -51,7 +43,7 @@ class UserPayment(Resource):
         test_req = requests.post(url='http://payment_gateway:8000/api/v1/invoices/', data=json.dumps(data),
                                  headers={'x-request-id': request_id})
 
-        if test_req.status_code == 200:
+        if test_req.status_code == HTTPStatus.OK:
             payment.add_payment_id(test_req.json(), invoice.id)
         return test_req.json().get('checkout_url')
 
