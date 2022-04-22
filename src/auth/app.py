@@ -4,7 +4,6 @@ from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-# from src.api.invoice_api import invoice_blueprint
 from src.api.oauth_api import oauth_blueprint
 from src.api.payment_api import payment_blueprint
 from src.api.role_api import roles_blueprint, roles_status_blueprint
@@ -34,13 +33,13 @@ app.register_blueprint(user_blueprint)
 app.register_blueprint(token_blueprint)
 app.register_blueprint(oauth_blueprint)
 app.register_blueprint(payment_blueprint)
-# app.register_blueprint(invoice_blueprint)
+
 
 from jaeger_client import Config
 from flask_opentracing import FlaskTracer
 
 
-# @app.before_request
+@app.before_request
 def before_request():
     request_id = request.headers.get('X-Request-Id')
     if not request_id:
