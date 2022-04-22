@@ -1,6 +1,7 @@
 # subscriber.py
 import json
 import logging
+import signal
 
 import pika
 import sys
@@ -12,6 +13,14 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s: %(message)
 logger = logging.getLogger(__name__)
 
 config = {'host': settings.RMQ_HOST, 'port': settings.RMQ_PORT, 'exchange': settings.RMQ_EXCHANGE}
+
+
+def exit_handler(signal, frame):
+    logger.info('signal exit received. stopping consuming')
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, exit_handler)
 
 
 class Subscriber:
@@ -28,12 +37,7 @@ class Subscriber:
         parameters = pika.ConnectionParameters(host=self.config['host'], port=self.config['port'])
         return pika.BlockingConnection(parameters)
 
-    def on_message_callback(self, channel, method, properties, body, userdata=None):
-        binding_key = method.routing_key
-        invoice_data = json.loads(body)
-
     def setup(self):
-
         channel = self.connection.channel()
         channel.exchange_declare(exchange=self.config['exchange'], exchange_type='topic')
         channel.queue_declare(queue=self.queueName)
@@ -41,16 +45,12 @@ class Subscriber:
         logger.info('start read message from queue')
         channel.basic_consume(queue=self.queueName,
                               on_message_callback=user_invoice_update, auto_ack=False)
-        try:
-            channel.start_consuming()
-        except KeyboardInterrupt:
-            channel.stop_consuming()
+        channel.start_consuming()
 
 
 def main():
     """Main method."""
     logger.error(config)
-
     subscriber = Subscriber(settings.RMQ_QUEUE, settings.RMQ_KEY, config)
     subscriber.setup()
 
