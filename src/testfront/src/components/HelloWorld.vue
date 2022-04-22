@@ -3,7 +3,32 @@
     
     <div class="q-pa-md" style="max-width: 400px">
     
-    <q-btn label="Войти" color="primary" v-if="!user" @click="login" />
+    <q-form
+      @submit="login"
+      class="q-gutter-md"
+      v-if="!user"
+    >
+      <q-input
+          filled
+          v-model="username"
+          label="Username"
+          lazy-rules
+          v-if="!user"
+        />
+      <q-input
+          filled
+          v-model="userpass"
+          label="Password"
+          lazy-rules
+          v-if="!user"
+          type="password"
+        />
+      <div>
+        <q-btn label="Войти" type="submit" color="primary" v-if="!user" />
+      </div>
+    </q-form>
+
+
     <div v-if="user"> {{ greeting }} </div>
     <br/>
     <div v-if="user"> {{ userStatus }} </div>
@@ -47,6 +72,9 @@ import { ref } from 'vue'
 import jwt_decode from "jwt-decode"
 // import { openURL } from 'quasar'
 
+const username=ref();
+const userpass=ref();
+
 const monthCount=ref(3);
 const history=ref();
 const greeting=ref();
@@ -57,9 +85,9 @@ const motivation=ref("Купить подписку");
 const user=ref();
 
 function login() {
-  fetch('http://127.0.0.1/api/v1/auth/user/login/', {
+  fetch('http://localhost/api/v1/auth/user/login/', {
     method: 'POST',
-    body: JSON.stringify({"password": "tochange", "username": "alisovenko"}),
+    body: JSON.stringify({"password": userpass.value, "username": username.value}),
     headers: {
       'Content-Type': 'application/json'
     }
@@ -90,7 +118,7 @@ function login() {
 }
 
 function onSubmit() {
-  fetch('http://127.0.0.1/api/v1/payment/', {
+  fetch('http://localhost/api/v1/payment/', {
     method: 'POST',
     headers: {
       'Authorization': 'Bearer ' + user.value
@@ -99,8 +127,8 @@ function onSubmit() {
       {
         "product_id": "8b14aa60-6b09-4ced-a344-aca486419592",
         "product_count": monthCount.value,
-        "success_url": "http://localhost:8080/",
-        "cancel_url": "http://localhost:8080/"
+        "success_url": "http://localhost/",
+        "cancel_url": "http://localhost/"
       }
     ),
   })
