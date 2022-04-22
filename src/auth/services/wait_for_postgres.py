@@ -3,7 +3,7 @@ from time import sleep
 
 import psycopg2
 
-from src.core.config import settings
+from core.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

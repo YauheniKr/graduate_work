@@ -27,13 +27,13 @@ config.set_section_option(section, "POSTGRES_DB", os.environ.get("POSTGRES_DB"))
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-from src.models.model_base import ModelBase
-from src.models.model_role import *
+from models.model_base import ModelBase
+from models.model_role import *
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from src.models.model_user import *
+from models.model_user import *
 
 target_metadata = ModelBase.metadata
 

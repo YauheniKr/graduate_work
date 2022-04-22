@@ -1,9 +1,9 @@
 import uuid
 
-from sqlalchemy import Column, String, Text, CheckConstraint, Float
+from sqlalchemy import CheckConstraint, Column, Float, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.models.model_base import ModelBase
+from models.model_base import ModelBase
 
 
 class Products(ModelBase):

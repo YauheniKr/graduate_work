@@ -1,15 +1,11 @@
 import datetime
 import logging
-from functools import wraps
 
 from dateutil.relativedelta import relativedelta
-from flask import make_response
-from flask_jwt_extended import get_jwt, decode_token, jwt_required
-from flask_restful import abort
-from sqlalchemy import update, desc, and_
+from flask_jwt_extended import get_jwt, jwt_required
+from sqlalchemy import and_, desc, update
 
-from src.models.model_user import UserInvoice
-from src.services.redis_service import RedisTokenStorage
+from models.model_user import UserInvoice
 
 logger = logging.getLogger(__name__)
 

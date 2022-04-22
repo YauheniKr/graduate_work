@@ -1,8 +1,8 @@
 import logging
 from time import sleep
 
-from src.core.config import settings
-from src.db.subscriber import Subscriber, config
+from core.config import settings
+from db.subscriber import Subscriber, config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

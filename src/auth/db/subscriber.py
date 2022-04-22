@@ -1,13 +1,11 @@
-# subscriber.py
 import json
 import logging
 import signal
 
 import pika
-import sys
 
-from src.api.payment_api import user_invoice_update
-from src.core.config import settings
+from api.payment_api import user_invoice_update
+from core.config import settings
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s: %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z')
 logger = logging.getLogger(__name__)
