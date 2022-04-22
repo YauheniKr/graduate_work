@@ -26,6 +26,51 @@ def user_invoice_update(channel, method, properties, body, userdata=None):
 class UserPayment(Resource):
 
     def post(self):
+        """
+        Метод создает платеж
+        ---
+        tags:
+          - UserPayment
+        parameters:
+          - name: Authorization
+            in: header
+            schema:
+              properties:
+                access_token:
+                  type: string
+                  required: true
+                  description: токен доступа. Добавляем Bearer в начало токена при тестировании
+          - name: body
+            in: body
+            schema:
+              properties:
+                product_id:
+                  in: query
+                  type: string
+                  format: uuid
+                  required: true
+                  description: UUID продукта
+                product_count:
+                  type: integer
+                  required: true
+                  description: Количество продукта
+
+        responses:
+          200:
+            description: Successfully created payment
+            schema:
+              properties:
+                checkout_url:
+                  type: string
+                  description: ссылка на платежную систему
+          409:
+            description: Невозможно создать платеж
+          403:
+            description: Запрос без x_request_id
+          500:
+            description: Внутренняя ошибка сервиса PaymentGateway
+        """
+
         json_data = request.get_json(force=True)
         request_id = request.headers.get('X-Request-Id')
         session = create_session()
