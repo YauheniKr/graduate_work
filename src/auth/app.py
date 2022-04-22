@@ -1,16 +1,20 @@
+from http import HTTPStatus
+
 from flasgger import Swagger
-from flask import Flask, request, make_response
+from flask import Flask, make_response, request
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-# from src.api.invoice_api import invoice_blueprint
-from src.api.oauth_api import oauth_blueprint
-from src.api.payment_api import payment_blueprint
-from src.api.role_api import roles_blueprint, roles_status_blueprint
-from src.api.user_api import token_blueprint, user_blueprint
-from src.commands import usersbp
-from src.core.config import settings
+
+from api.oauth_api import oauth_blueprint
+from api.payment_api import payment_blueprint
+from api.role_api import roles_blueprint, roles_status_blueprint
+from api.user_api import token_blueprint, user_blueprint
+from core.config import settings
+
+from commands import usersbp
+
 
 app = Flask(__name__)
 swagger = Swagger(app)
@@ -34,17 +38,17 @@ app.register_blueprint(user_blueprint)
 app.register_blueprint(token_blueprint)
 app.register_blueprint(oauth_blueprint)
 app.register_blueprint(payment_blueprint)
-# app.register_blueprint(invoice_blueprint)
 
-from jaeger_client import Config
+
 from flask_opentracing import FlaskTracer
+from jaeger_client import Config
 
 
-# @app.before_request
+@app.before_request
 def before_request():
     request_id = request.headers.get('X-Request-Id')
     if not request_id:
-        return make_response('X-Request-Id not found', 404)
+        return make_response('X-Request-Id not found', HTTPStatus.NOT_FOUND)
 
 
 config_data = {
@@ -53,7 +57,7 @@ config_data = {
         'param': 1,
     },
     'local_agent': {
-        'reporting_host': '192.168.88.131',
+        'reporting_host': 'jaeger',
         'reporting_port': '6831',
     },
     'logging': True,

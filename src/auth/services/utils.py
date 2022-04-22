@@ -2,10 +2,11 @@ from datetime import datetime
 from functools import wraps
 
 from flask import make_response
-from flask_jwt_extended import get_jwt, verify_jwt_in_request, create_access_token, create_refresh_token, decode_token
+from flask_jwt_extended import (create_access_token, create_refresh_token,
+                                decode_token, get_jwt, verify_jwt_in_request)
 from flask_restful import abort
 
-from src.services.redis_service import RedisTokenStorage
+from services.redis_service import RedisTokenStorage
 
 
 def admin_required():

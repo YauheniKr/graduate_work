@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.models.model_base import ModelBase
+from models.model_base import ModelBase
 
 
 class Role(ModelBase):

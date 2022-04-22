@@ -6,10 +6,10 @@ from flask_pydantic import validate
 from flask_restful import Api, Resource
 from jwt import ExpiredSignatureError
 
-from src.db.global_init import create_session
-from src.models.pydantic_models import AuthHistoryBase, AuthHistoryModel
-from src.services.user import AuthHistoryRecord, TokenRequest, UserRequest
-from src.services.utils import get_paginated_list
+from db.global_init import create_session
+from models.pydantic_models import AuthHistoryBase, AuthHistoryModel
+from services.user import AuthHistoryRecord, TokenRequest, UserRequest
+from services.utils import get_paginated_list
 
 user_blueprint = Blueprint('user', __name__)
 token_blueprint = Blueprint('token', __name__)
@@ -98,7 +98,7 @@ class UserLogin(Resource):
           401:
             description: Пароль некорректен
         """
-        from src.app import tracer
+        from app import tracer
         parent_span = tracer.get_span()
         session = create_session()
         user = UserRequest(session)
@@ -243,7 +243,7 @@ class GetUserAuthHistory(Resource):
             auth_history = auth_history.get_auth_record()
             session.close()
         except ExpiredSignatureError:
-            return make_response({'msg': 'token expired'}, 401)
+            return make_response({'msg': 'token expired'}, HTTPStatus.UNAUTHORIZED)
         history = [AuthHistoryBase(id=record.id, timestamp=record.timestamp, user_agent=record.user_agent,
                                    ipaddress=record.ip_address, device=record.device)
                    for record in auth_history]
@@ -254,8 +254,7 @@ class GetUserAuthHistory(Resource):
             page=request.args.get('page', 1),
             limit=request.args.get('limit', 5)
         )
-        out = AuthHistoryModel(**auth_record_out)
-        return out
+        return AuthHistoryModel(**auth_record_out)
 
 
 class TokenRefresh(Resource):

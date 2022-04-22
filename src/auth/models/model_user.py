@@ -1,17 +1,16 @@
+import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, String, Text, UniqueConstraint, Integer, CheckConstraint, Enum
+from sqlalchemy import (CheckConstraint, Column, DateTime, Enum, ForeignKey,
+                        Integer, String, Text, UniqueConstraint)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.sql import func
 
-from src.models.model_base import ModelBase
-from src.models.model_product import Products
-
-import enum
-
-from src.models.model_role import Role
+from models.model_base import ModelBase
+from models.model_product import Products
+from models.model_role import Role
 
 
 class Status(enum.Enum):

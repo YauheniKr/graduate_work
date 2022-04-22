@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     RMQ_KEY: str
     RMQ_QUEUE: str
 
+    # Настройки payment gateway
+    PAYMENT_GATEWAY_URL: str
+
     class Config:
         case_sensitive = True
 

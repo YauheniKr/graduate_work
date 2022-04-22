@@ -1,20 +1,18 @@
 import logging
-
 from http import HTTPStatus
+
 from flask import make_response, request
-from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                decode_token, get_jwt, get_jwt_identity,
-                                jwt_required)
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from sqlalchemy import desc, or_
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from src.models.model_user import AuthHistory, User, SocialAccount, UserInvoice, Status
-from src.services.redis_service import InvalidTokenError, RedisTokenStorage
-from src.services.utils import generate_tokens
+from models.model_user import (AuthHistory, SocialAccount, Status, User,
+                               UserInvoice)
+from services.redis_service import InvalidTokenError, RedisTokenStorage
+from services.utils import generate_tokens
 
 logger = logging.getLogger(__name__)
-
 
 
 class UserRequest:
@@ -30,17 +28,17 @@ class UserRequest:
             self.session.commit()
         except IntegrityError:
             return None
-        return make_response({'msg': 'user created'}, 200)
+        return make_response({'msg': 'user created'}, HTTPStatus.OK)
 
     def login(self):
         auth = request.json
         is_admin = False
         if not auth or not auth['username'] or not auth['password']:
-            return make_response('username or password absent', 401)
+            return make_response('username or password absent', HTTPStatus.UNAUTHORIZED)
         user = self.session.query(User).filter_by(username=auth['username']).first()
         self.session.commit()
         if not user:
-            return make_response('User not found', 404)
+            return make_response('User not found', HTTPStatus.NOT_FOUND)
         if user.role and user.role[0].role_name == 'superuser':
             is_admin = True
 
@@ -61,30 +59,30 @@ class UserRequest:
             self.session.add(history)
             self.session.commit()
             return token
-        return make_response('Password incorrect', 401)
+        return make_response('Password incorrect', HTTPStatus.UNAUTHORIZED)
 
     @jwt_required()
     def logout(self):
         token = get_jwt()
         redis_service = RedisTokenStorage()
         redis_service.add_token_to_database(token)
-        return make_response('Token revoked', 200)
+        return make_response('Token revoked', HTTPStatus.OK)
 
     @jwt_required()
     def update(self, update_data):
         user_id = get_jwt()['sub']
         if not update_data:
-            return make_response('User data incorrect', 400)
+            return make_response('User data incorrect', HTTPStatus.BAD_REQUEST)
         user = self.session.query(User).filter(User.id == user_id)
         self.session.commit()
         if not user:
-            return make_response('User not found', 404)
+            return make_response('User not found', HTTPStatus.NOT_FOUND)
         password = update_data.get('password')
         if password:
             update_data['password'] = generate_password_hash(password, method='sha256')
         user.update(update_data)
         self.session.commit()
-        return make_response('User data updated', 200)
+        return make_response('User data updated', HTTPStatus.OK)
 
     def auth_login(self, user_data):
         user = self.session.query(User).filter(
@@ -121,7 +119,7 @@ class TokenRequest:
         try:
             redis_service.jti_refresh_token(token)
         except InvalidTokenError:
-            return make_response('Token is absent or incorrect', 401,
+            return make_response('Token is absent or incorrect', HTTPStatus.UNAUTHORIZED,
                                  {'Authentication': 'Token is absent or incorrect'})
         else:
             if token.get('is_administrator'):
