@@ -52,9 +52,11 @@ class RoleGetUpdateDelete(Resource):
             description: Роль с заданным id не найдена
         """
         session = create_session()
-        role = RoleRequest(role_id, session)
-        role = role.get_role()
-        session.close()
+        try:
+            role = RoleRequest(role_id, session)
+            role = role.get_role()
+        finally:
+            session.close()
         if not role:
             return f'Не найдена роль с id {role_id}', HTTPStatus.NOT_FOUND
         return RoleModel(id=role.id, role_name=role.role_name, role_weight=role.role_weight,
@@ -108,12 +110,13 @@ class RoleGetUpdateDelete(Resource):
         """
         json_data = request.get_json(force=True)
         session = create_session()
-        role = RoleRequest(role_id, session)
-        role = role.update_role(json_data)
-
+        try:
+            role = RoleRequest(role_id, session)
+            role = role.update_role(json_data)
+        finally:
+            session.close()
         if not role:
             return f'Не найдена роль с id {role_id}', HTTPStatus.NOT_FOUND
-        session.close()
         return RoleModel(id=role.id, role_name=role.role_name, role_weight=role.role_weight,
                          description=role.description)
 
@@ -136,11 +139,13 @@ class RoleGetUpdateDelete(Resource):
             description: Роль с заданным id не найдена
         """
         session = create_session()
-        role = RoleRequest(role_id, session)
-        role = role.delete_role()
+        try:
+            role = RoleRequest(role_id, session)
+            role = role.delete_role()
+        finally:
+            session.close()
         if not role:
             return f'Не найдена роль с id {role_id}', HTTPStatus.NOT_FOUND
-        session.close()
         return {"msg": "Роль удалена"}
 
 
@@ -148,7 +153,7 @@ class RoleCreate(Resource):
 
     def post(self) -> Union[dict[str], tuple]:
         """
-        Этот метоl создает роль по предоставленной информации в теле запроса
+        Этот метод создает роль по предоставленной информации в теле запроса
         ---
         tags:
           - Role
@@ -175,15 +180,17 @@ class RoleCreate(Resource):
           409:
             description: Роль с данными параметрами уже существует
         """
-        session = create_session()
         json_data = request.get_json(force=True)
-        role = RolesRequest(session)
-        role = role.create_role(json_data)
+        session = create_session()
+        try:
+            role = RolesRequest(session)
+            role = role.create_role(json_data)
+        finally:
+            session.close()
         if not role:
             return 'Роль с данными параметрами уже существует', HTTPStatus.CONFLICT
         elif role['msg'] == 'superuser':
             return 'Роль superuser можно создать только консольной командой', HTTPStatus.CONFLICT
-        session.close()
         return {'msg': 'Роль создана'}
 
 
@@ -216,8 +223,11 @@ class RolesGet(Resource):
                   description: описание роли
         """
         session = create_session()
-        roles = RolesRequest(session)
-        roles = roles.get_roles()
+        try:
+            roles = RolesRequest(session)
+            roles = roles.get_roles()
+        finally:
+            session.close()
         roles = [RoleModel(id=role.id, role_name=role.role_name, role_weight=role.role_weight,
                            description=role.description) for role in roles]
         return roles
@@ -263,19 +273,22 @@ class RoleUserCreateDelete(Resource):
           409:
             description: Пользователь с данной ролью уже существует
         """
-        session = create_session()
         json_data = request.get_json(force=True)
-        user_role = RoleUserRequest(session)
-        user_role = user_role.user_add_role(json_data)
+        session = create_session()
+        try:
+            user_role = RoleUserRequest(session)
+            user_role = user_role.user_add_role(json_data)
+        finally:
+            session.close()
         if not user_role:
             return 'User с данной ролью уже существует', HTTPStatus.CONFLICT
-        elif user_role.status_code == 403:
+        elif user_role.status_code == HTTPStatus.FORBIDDEN:
             return user_role
         return user_role
 
     def delete(self) -> Union[dict[str], tuple]:
         """
-        Этот метод удаяляет роль у пользователя.
+        Этот метод удаляет роль у пользователя.
         ---
         tags:
           - RoleUser
@@ -299,11 +312,13 @@ class RoleUserCreateDelete(Resource):
           409:
             description: Пользователь не существует
         """
-        session = create_session()
         json_data = request.get_json(force=True)
-        user_role = RoleUserRequest(session)
-        user_role = user_role.user_delete_role(json_data)
-        session.close()
+        session = create_session()
+        try:
+            user_role = RoleUserRequest(session)
+            user_role = user_role.user_delete_role(json_data)
+        finally:
+            session.close()
         if not user_role:
             return 'User не существует', HTTPStatus.NOT_FOUND
         return user_role
@@ -340,10 +355,13 @@ class CheckUserRole(Resource):
                   type: string
                   description: имя роли
         """
-        session = create_session()
         json_data = request.get_json(force=True)
-        user_role_status = RoleUserRequest(session)
-        user_role_status = user_role_status.get_user_status(json_data)
+        session = create_session()
+        try:
+            user_role_status = RoleUserRequest(session)
+            user_role_status = user_role_status.get_user_status(json_data)
+        finally:
+            session.close()
         return RoleUserModel(role_name=user_role_status['role_name'], role_weight=user_role_status['role_weight'])
 
 
