@@ -42,7 +42,12 @@ services:
     image: ya_practicum/auth_api
     env_file:
       - config/.env.auth
-    command: python3 /src/db/subscriber.py
+    build:
+      context: ./
+      dockerfile: docker/auth/Dockerfile
+    entrypoint: >
+      sh -c "python3 /src/services/wait_for_rabbit.py
+      && python3 /src/db/subscriber.py"
     networks:
       - default
       - movies-network
