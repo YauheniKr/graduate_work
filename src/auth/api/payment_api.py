@@ -1,6 +1,8 @@
 import logging
 import json
+
 from http import HTTPStatus
+from urllib.parse import urljoin
 
 import requests
 from authlib.integrations.flask_client import OAuth
@@ -46,10 +48,13 @@ class UserPayment(Resource):
             "cancel_url": json_data.get("cancel_url")
         }
 
-        test_req = requests.post(url='http://payment_gateway:8000/api/v1/invoices/', data=json.dumps(data),
-                                 headers={'x-request-id': request_id})
+        test_req = requests.post(
+            url=urljoin(settings.PAYMENT_GATEWAY_URL, 'api/v1/invoices/'),
+            data=json.dumps(data),
+            headers={'x-request-id': request_id}
+        )
 
-        if test_req.status_code == 200:
+        if test_req.status_code == HTTPStatus.OK:
             payment.add_payment_id(test_req.json(), invoice.id)
         return test_req.json().get('checkout_url')
 
