@@ -1,8 +1,8 @@
 import sqlalchemy
 import sqlalchemy.orm
 
-from src.core.config import settings
-from src.models.model_base import ModelBase
+from core.config import settings
+from models.model_base import ModelBase
 
 __factory = None
 username = settings.POSTGRES_USER

@@ -1,19 +1,21 @@
-import logging
 import json
-from http import HTTPStatus
+import logging
 
 import requests
-from authlib.integrations.flask_client import OAuth
-from flask import current_app as app, url_for, Blueprint, make_response, request
-from flask_restful import Resource, Api
-from requests.structures import CaseInsensitiveDict
-from sqlalchemy import update
+from flask import Blueprint, request
+from flask_restful import Api, Resource
 
-from src.core.config import settings
-from src.db.global_init import create_session
-from src.models.model_user import UserInvoice
-from src.models.pydantic_models import AuthUserInvoice
-from src.services.payment import Payment, UserInvoiceUpdate
+# from core.config import settings
+from db.global_init import create_session
+# from models.model_user import UserInvoice
+# from models.pydantic_models import AuthUserInvoice
+from services.payment import Payment, UserInvoiceUpdate
+
+# from http import HTTPStatus
+
+# from requests.structures import CaseInsensitiveDict
+# from sqlalchemy import update
+
 
 payment_blueprint = Blueprint('payment', __name__)
 payment_api = Api(payment_blueprint, prefix='/api/v1/')

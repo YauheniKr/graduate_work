@@ -6,10 +6,10 @@ from flask_pydantic import validate
 from flask_restful import Api, Resource
 from jwt import ExpiredSignatureError
 
-from src.db.global_init import create_session
-from src.models.pydantic_models import AuthHistoryBase, AuthHistoryModel
-from src.services.user import AuthHistoryRecord, TokenRequest, UserRequest
-from src.services.utils import get_paginated_list
+from db.global_init import create_session
+from models.pydantic_models import AuthHistoryBase, AuthHistoryModel
+from services.user import AuthHistoryRecord, TokenRequest, UserRequest
+from services.utils import get_paginated_list
 
 user_blueprint = Blueprint('user', __name__)
 token_blueprint = Blueprint('token', __name__)

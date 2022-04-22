@@ -1,10 +1,9 @@
 import click
 from flask import Blueprint
-from werkzeug.security import generate_password_hash
-
 from src.db.global_init import create_session
 from src.models.model_role import Role, RoleUser
 from src.models.model_user import User
+from werkzeug.security import generate_password_hash
 
 usersbp = Blueprint('superuser', __name__)
 

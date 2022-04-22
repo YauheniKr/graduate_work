@@ -2,7 +2,7 @@ from datetime import datetime
 
 from redis.client import StrictRedis as Redis
 
-from src.db.redis_storage import redis_conn
+from db.redis_storage import redis_conn
 
 
 class TokenStorageError(Exception):

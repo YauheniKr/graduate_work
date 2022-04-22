@@ -1,9 +1,9 @@
 from flask import make_response
 from sqlalchemy.exc import IntegrityError
 
-from src.models.model_role import Role, RoleUser
-from src.models.model_user import User
-from src.services.utils import admin_required
+from models.model_role import Role, RoleUser
+from models.model_user import User
+from services.utils import admin_required
 
 
 class RoleRequest:

@@ -6,9 +6,9 @@ from flask import Blueprint, request
 from flask_pydantic import validate
 from flask_restful import Api, Resource
 
-from src.db.global_init import create_session
-from src.models.pydantic_models import RoleModel, RoleUserModel
-from src.services.role import RoleRequest, RolesRequest, RoleUserRequest
+from db.global_init import create_session
+from models.pydantic_models import RoleModel, RoleUserModel
+from services.role import RoleRequest, RolesRequest, RoleUserRequest
 
 roles_blueprint = Blueprint('roles', __name__)
 roles_status_blueprint = Blueprint('roles_status', __name__)

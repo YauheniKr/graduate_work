@@ -1,20 +1,18 @@
 import logging
-
 from http import HTTPStatus
+
 from flask import make_response, request
-from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                decode_token, get_jwt, get_jwt_identity,
-                                jwt_required)
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from sqlalchemy import desc, or_
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from src.models.model_user import AuthHistory, User, SocialAccount, UserInvoice, Status
-from src.services.redis_service import InvalidTokenError, RedisTokenStorage
-from src.services.utils import generate_tokens
+from models.model_user import (AuthHistory, SocialAccount, Status, User,
+                               UserInvoice)
+from services.redis_service import InvalidTokenError, RedisTokenStorage
+from services.utils import generate_tokens
 
 logger = logging.getLogger(__name__)
-
 
 
 class UserRequest:
