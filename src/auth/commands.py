@@ -1,11 +1,13 @@
+import logging
+
 import click
 from flask import Blueprint
-from werkzeug.security import generate_password_hash
-
 from src.db.global_init import create_session
 from src.models.model_role import Role, RoleUser
 from src.models.model_user import User
+from werkzeug.security import generate_password_hash
 
+logger = logging.getLogger(__name__)
 usersbp = Blueprint('superuser', __name__)
 
 
@@ -27,9 +29,9 @@ def create_superuser(username, password, email):
         session.add(roleuser)
         session.commit()
         session.close()
-        print('user successfully created')
+        logger.info('user successfully created')
     else:
-        print('User with this parameters already exists')
+        logger.info('User with this parameters already exists')
 
 
 def create_superuser_role():
