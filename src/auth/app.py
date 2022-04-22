@@ -12,7 +12,7 @@ from api.role_api import roles_blueprint, roles_status_blueprint
 from api.user_api import token_blueprint, user_blueprint
 from core.config import settings
 
-from .commands import usersbp
+from commands import usersbp
 
 app = Flask(__name__)
 swagger = Swagger(app)

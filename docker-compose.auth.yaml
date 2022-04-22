@@ -31,7 +31,7 @@ services:
     env_file:
       - config/.env.auth
     entrypoint: >
-      sh -c " python3 /src/services/wait_for_postgres.py
+      sh -c " python3 /services/wait_for_postgres.py
       && alembic upgrade head
       && gunicorn wsgi_app:app -b 0.0.0.0:8000 -w 2 --log-level debug --timeout 0"
     networks:
@@ -42,7 +42,7 @@ services:
     image: ya_practicum/auth_api
     env_file:
       - config/.env.auth
-    command: python3 /src/db/subscriber.py
+    command: python3 /db/subscriber.py
     networks:
       - default
       - movies-network
