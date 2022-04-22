@@ -57,6 +57,9 @@ class UserInvoiceUpdate:
         if invoice is None:
             return None
 
+        if body.get('state') != 'paid':
+            return None
+
         invoice.payment_status = body.get('state')
         self.session.add(invoice)
         self.session.commit()
