@@ -58,6 +58,14 @@ class UserPayment(Resource):
                   type: integer
                   required: true
                   description: Количество продукта
+                success_url:
+                  type: string
+                  required: true
+                  description: Ссылка на фронт в случае успеха
+                cancel_url:
+                  type: string
+                  required: true
+                  description: Ссылка на фронт в случае неудачи
 
         responses:
           200:
@@ -100,4 +108,4 @@ class UserPayment(Resource):
         return test_req.json().get('checkout_url')
 
 
-payment_api.add_resource(UserPayment, '/payment/')
+payment_api.add_resource(UserPayment, 'payment/')
